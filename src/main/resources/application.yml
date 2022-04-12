@@ -1,5 +1,5 @@
 spring:
-  # ????????????????????MySQL??????
+  # 数据库配置
   datasource:
     username: root
     password: 123456
@@ -9,16 +9,16 @@ spring:
     hikari:
       minimum-idle: 3
       maximum-pool-size: 10
-      max-lifetime: 30000   #????30????????1800?
+      max-lifetime: 30000
       connection-test-query: SELECT 1
   mvc:
     dispatch-options-request: true
 
-#mybatis???
+#mybatis
 #mybatis:
 #  type-aliases-package: xdu.backend.Dao
 #  mapper-locations: classpath:Mapper/*.xml
 
-# spring boot??????????????
+# spring boot端口
 server:
   port: 8080

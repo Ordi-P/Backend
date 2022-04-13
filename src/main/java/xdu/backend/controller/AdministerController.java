@@ -16,8 +16,8 @@ import xdu.backend.pojo.User;
 
 import java.util.List;
 
-@Controller
-@RequestMapping("/administer")
+@RestController
+@CrossOrigin
 public class AdministerController {
     @Autowired
     BorrowMapper borrowMapper;

@@ -4,8 +4,8 @@
 
     <resultMap id="UserMap" type="xdu.backend.pojo.User">
         <result column="user_id" jdbcType="DECIMAL" property="userId"/>
-        <result column="user_name" jdbcType="VARCHAR" property="userName"/>
-        <result column="account" jdbcType="VARCHAR" property="account"/>
+        <result column="nname" jdbcType="VARCHAR" property="userName"/>
+        <result column="phone_num" jdbcType="VARCHAR" property="phoneNumber"/>
         <result column="ppassword" jdbcType="VARCHAR" property="password"/>
         <result column="privilege" jdbcType="DECIMAL" property="privilege"/>
     </resultMap>
@@ -15,12 +15,12 @@
         values (#{phoneNumber},#{password},#{userName})
     </insert>
 
-    <select id="getUserByPhoneNumber" resultType="xdu.backend.pojo.User">
+    <select id="getUserByPhoneNumber" resultMap="UserMap">
         select * from user where phone_num = #{phoneNumber}
     </select>
 
-    <update id="changeNameByPhoneNumber" parameterType="xdu.backend.pojo.User">
-        update user set user_name = #{userName} where phone_num = #{phoneNunber}
+    <update id="changeNameById">
+        update user set nname = #{newName} where phone_num = #{phoneNumber}
     </update>
     
 

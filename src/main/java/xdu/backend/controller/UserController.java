@@ -20,7 +20,7 @@ public class UserController {
 
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     @ResponseBody
-    String registerUser(User user){
+    String registerUser(@RequestBody User user){
         if(user == null){
             return "failed";
         }
@@ -33,7 +33,7 @@ public class UserController {
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     @ResponseBody
-    String login(User user, HttpSession session, HttpServletRequest request, HttpServletResponse response){
+    String login(@RequestBody User user, HttpSession session, HttpServletRequest request, HttpServletResponse response){
         if(user == null){
             return "failed";
         }
@@ -68,5 +68,6 @@ public class UserController {
         User user = ((User) session.getAttribute("userTicket:" + cookie.getValue()));
         return user;
     }
+
 
 }

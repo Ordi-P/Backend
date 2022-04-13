@@ -10,5 +10,5 @@ public interface UserDao {
 
     User getUserByPhoneNumber(Long phoneNumber);
 
-    int changeNameById(User user);
+    int changeNameById(String newName,Long phoneNumber);
 }

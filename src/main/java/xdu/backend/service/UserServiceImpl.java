@@ -21,13 +21,16 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public int registerUser(User user) {
+        User userDB = userDao.getUserByPhoneNumber(user.getPhoneNumber());
+        if(user != null)
+            return -1;
         return userDao.registerUser(user);
     }
 
     @Override
     public boolean login(User user, HttpSession session, HttpServletRequest request, HttpServletResponse response) {
-        Long userPhoneNumber = user.getPhoneNumber();
-        User userDB = userDao.getUserByPhoneNumber(userPhoneNumber);
+        Long phoneNumber = user.getPhoneNumber();
+        User userDB = userDao.getUserByPhoneNumber(phoneNumber);
         if(userDB.getPassword().equals(user.getPassword())){
             String uuid = UUID.randomUUID().toString().replace("-","");
             session.setAttribute("userTicket:" + uuid,userDB);
@@ -48,7 +51,7 @@ public class UserServiceImpl implements UserService{
         if(userDB == null)
             return false;
         userDB.setUserName(newName);
-        int res = userDao.changeNameById(userDB);
+        int res = userDao.changeNameById(newName,userDB.getPhoneNumber());
         if (res > 0)
             return true;
         else

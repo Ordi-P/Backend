@@ -40,11 +40,15 @@ public class AdministerController {
         book.setBook_id(bookid);
         book.setNname(bookname);
         book.setFree(booknum);
-        int res = bookMapper.insert(book);
-        if(res > 0){
-            return "success";
+        try{
+            int res = bookMapper.insert(book);
+            if(res > 0){
+                return "success";
+            }
+            return "failed";
+        } catch (Exception e){
+            return "failed";
         }
-        return "failed";
     }
 
     @GetMapping(value = "/removebook")
@@ -53,11 +57,16 @@ public class AdministerController {
         if(bookid == null){
             return "failed";
         }
-        int res = bookMapper.deleteByPrimaryKey(bookid);
-        if(res > 0){
-            return "success";
+        try{
+            int res = bookMapper.deleteByPrimaryKey(bookid);
+            if(res > 0){
+                return "success";
+            }
+            return "failed";
+        } catch (Exception e){
+            return "failed";
         }
-        return "failed";
+
     }
 
     @GetMapping(value = "/updatebook")
@@ -73,11 +82,17 @@ public class AdministerController {
         if (bookname != null)
             book.setNname(bookname);
         book.setFree(booknum);
-        int res = bookMapper.updateByPrimaryKeySelective(book);
-        if(res > 0){
-            return "success";
+
+        try{
+            int res = bookMapper.updateByPrimaryKeySelective(book);
+            if(res > 0){
+                return "success";
+            }
+            return "failed";
+        } catch (Exception e){
+            return "failed";
         }
-        return "failed";
+
     }
 
     @GetMapping(value = "/searchbook")
@@ -92,16 +107,24 @@ public class AdministerController {
 
         BookExample example1 = new BookExample();
         example1.createCriteria().andBook_idEqualTo(bookid);
-        List<Book> res = bookMapper.selectByExample(example1);
 
-        JSONObject ret = (JSONObject) JSON.toJSON(res);
+        try{
+            List<Book> res = bookMapper.selectByExample(example1);
 
-        ret.put("result", "success");
+            JSONObject ret = (JSONObject) JSON.toJSON(res);
 
-        if(!res.isEmpty()){
+            ret.put("result", "success");
+
+            if(!res.isEmpty()){
+                return ret;
+            }
             return ret;
+        } catch (Exception e){
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("result", "failed");
+            return jsonObject;
         }
-        return ret;
+
     }
 
     @GetMapping(value = "/comment")
@@ -116,11 +139,15 @@ public class AdministerController {
         comment1.setBook_id(bookid);
         comment1.setCcomment(comment);
 
-        int res = commentMapper.insert(comment1);
-        if(res > 0){
-            return "success";
+        try{
+            int res = commentMapper.insert(comment1);
+            if(res > 0){
+                return "success";
+            }
+            return "failed";
+        } catch (Exception e){
+            return "failed";
         }
-        return "failed";
     }
 
 }

@@ -22,7 +22,7 @@ public class UserServiceImpl implements UserService{
     @Override
     public int registerUser(User user) {
         User userDB = userDao.getUserByPhoneNumber(user.getPhoneNumber());
-        if(user != null)
+        if(userDB != null)
             return -1;
         return userDao.registerUser(user);
     }

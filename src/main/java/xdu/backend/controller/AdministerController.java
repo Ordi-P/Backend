@@ -51,9 +51,9 @@ public class AdministerController {
         return "failed";
     }
 
-    @GetMapping(value = "/reserve")
+    @GetMapping(value = "/updatebook")
     @ResponseBody
-    String reserve(@RequestParam(value="bookid",required=true) String bookid,
+    String updatebook(@RequestParam(value="bookid",required=true) String bookid,
                    @RequestParam(value="bookname") String bookname,
                    @RequestParam(value="booknum") short booknum){
         if(bookid == null){

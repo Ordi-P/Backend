@@ -8,7 +8,7 @@ public interface UserDao {
 
     int registerUser(User user);
 
-    User getUserByPhoneNumber(Long phoneNumber);
+    User getUserById(String id);
 
-    int changeNameById(String newName,Long phoneNumber);
+    int changeNameById(String newName,String id);
 }

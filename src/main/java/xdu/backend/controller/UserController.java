@@ -44,10 +44,22 @@ public class UserController {
             return "failed";
     }
 
+    @RequestMapping("/logout")
+    String logout(HttpServletRequest request, HttpServletResponse response,HttpSession session){
+        Cookie[] cookies = request.getCookies();
+        for (Cookie cookie:cookies) {
+            if (cookie.getName().equals("cookieUserName")){
+                session.removeAttribute("userTicket:" + cookie.getValue());
+                return "success";
+            }
+        }
+        return "fail";
+    }
+
     @GetMapping("/changename/{newName}/{userId}")
     @ResponseBody
-    String changeName(@PathVariable("newName") String newName, @PathVariable("userId") Long userId){
-        boolean flag =  userService.changeNameById(newName, userId);
+    String changeName(@PathVariable("newName") String newName, @PathVariable("userId") String userId){
+            boolean flag =  userService.changeNameById(newName, userId);
         if(flag)
             return "success";
         else
@@ -56,7 +68,7 @@ public class UserController {
 
     @RequestMapping("/getUserByCookie")
     @ResponseBody
-    User getUserBycookie(HttpServletRequest request,HttpSession session){
+    User getUserByCookie(HttpServletRequest request,HttpSession session){
         Cookie[] cookies = request.getCookies();
         Cookie cookie = null;
         for(Cookie item : cookies){
@@ -65,6 +77,7 @@ public class UserController {
                 break;
             }
         }
+        if (cookie == null) return null;
         User user = ((User) session.getAttribute("userTicket:" + cookie.getValue()));
         return user;
     }

@@ -11,5 +11,5 @@ public interface UserService {
 
     boolean login(User user, HttpSession session, HttpServletRequest request, HttpServletResponse response);
 
-    boolean changeNameById(String newName, Long userId);
+    boolean changeNameById(String newName, String id);
 }

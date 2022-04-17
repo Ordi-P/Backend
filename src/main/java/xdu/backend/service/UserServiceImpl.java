@@ -21,7 +21,7 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public int registerUser(User user) {
-        User userDB = userDao.getUserByPhoneNumber(user.getPhoneNumber());
+        User userDB = userDao.getUserById(user.getId());
         if(userDB != null)
             return -1;
         return userDao.registerUser(user);
@@ -29,8 +29,9 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public boolean login(User user, HttpSession session, HttpServletRequest request, HttpServletResponse response) {
-        Long phoneNumber = user.getPhoneNumber();
-        User userDB = userDao.getUserByPhoneNumber(phoneNumber);
+        String id = user.getId();
+        User userDB = userDao.getUserById(id);
+        if(userDB == null) return false;
         if(userDB.getPassword().equals(user.getPassword())){
             String uuid = UUID.randomUUID().toString().replace("-","");
             session.setAttribute("userTicket:" + uuid,userDB);
@@ -44,14 +45,14 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public boolean changeNameById(String newName, Long phoneNumber) {
+    public boolean changeNameById(String newName, String id) {
         if(newName == null)
             return false;
-        User userDB = userDao.getUserByPhoneNumber(phoneNumber);
+        User userDB = userDao.getUserById(id);
         if(userDB == null)
             return false;
         userDB.setUserName(newName);
-        int res = userDao.changeNameById(newName,userDB.getPhoneNumber());
+        int res = userDao.changeNameById(newName,userDB.getId());
         if (res > 0)
             return true;
         else

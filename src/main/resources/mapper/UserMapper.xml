@@ -3,24 +3,22 @@
 <mapper namespace="xdu.backend.Dao.UserDao">
 
     <resultMap id="UserMap" type="xdu.backend.pojo.User">
-        <result column="user_id" jdbcType="DECIMAL" property="userId"/>
-        <result column="nname" jdbcType="VARCHAR" property="userName"/>
-        <result column="phone_num" jdbcType="VARCHAR" property="phoneNumber"/>
-        <result column="ppassword" jdbcType="VARCHAR" property="password"/>
-        <result column="privilege" jdbcType="DECIMAL" property="privilege"/>
+        <result column="user_id" jdbcType="BIGINT" property="id"/>
+        <result column="user_name" jdbcType="VARCHAR" property="userName"/>
+        <result column="password" jdbcType="VARCHAR" property="password"/>
     </resultMap>
     
     <insert id="registerUser" parameterType="xdu.backend.pojo.User">
-        insert into user (phone_num,ppassword,nname)
-        values (#{phoneNumber},#{password},#{userName})
+        insert into user (user_id,user_name,password)
+        values (#{id},#{userName},#{password})
     </insert>
 
-    <select id="getUserByPhoneNumber" resultMap="UserMap">
-        select * from user where phone_num = #{phoneNumber}
+    <select id="getUserById" resultMap="UserMap">
+        select * from user where user_id = #{id}
     </select>
 
     <update id="changeNameById">
-        update user set nname = #{newName} where phone_num = #{phoneNumber}
+        update user set user_name = #{newName} where user_id = #{id}
     </update>
     
 

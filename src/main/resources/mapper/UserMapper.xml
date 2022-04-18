@@ -7,7 +7,7 @@
         <result column="user_name" jdbcType="VARCHAR" property="userName"/>
         <result column="password" jdbcType="VARCHAR" property="password"/>
     </resultMap>
-    
+
     <insert id="registerUser" parameterType="xdu.backend.pojo.User">
         insert into user (user_id,user_name,password)
         values (#{id},#{userName},#{password})
@@ -20,8 +20,6 @@
     <update id="changeNameById">
         update user set user_name = #{newName} where user_id = #{id}
     </update>
-    
+
 
 </mapper>
-    
-    

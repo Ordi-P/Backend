@@ -1,24 +1,18 @@
 package xdu.backend.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
-import xdu.backend.Dao.UserDao;
-import xdu.backend.pojo.User;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+
 @Component
-public class LoginInterceptor implements HandlerInterceptor {
-
-    @Autowired
-    UserDao userDao;
-
+public class AdminLoginInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         Cookie[] cookies = request.getCookies();
@@ -28,7 +22,7 @@ public class LoginInterceptor implements HandlerInterceptor {
         }
         String cookieValue = null;
         for (Cookie item : cookies) {
-            if ("cookieUserName".equals(item.getName())) {
+            if ("adminCookie".equals(item.getName())) {
                 cookieValue = item.getValue();
                 break;
             }
@@ -38,7 +32,7 @@ public class LoginInterceptor implements HandlerInterceptor {
             return false;
         }
         HttpSession session = request.getSession();
-        Object obj = session.getAttribute("userTicket:" + cookieValue);
+        Object obj = session.getAttribute(cookieValue);
         if (null == obj) {
             response.getWriter().write("failed");
         }
@@ -56,4 +50,3 @@ public class LoginInterceptor implements HandlerInterceptor {
         HandlerInterceptor.super.afterCompletion(request, response, handler, ex);
     }
 }
-

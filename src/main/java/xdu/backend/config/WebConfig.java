@@ -16,13 +16,20 @@ public class WebConfig implements WebMvcConfigurer {
     @Autowired
     LoginInterceptor loginInterceptor;
 
+    @Autowired
+    AdminLoginInterceptor adminLoginInterceptor;
+
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        InterceptorRegistration ir = registry.addInterceptor(loginInterceptor);
-        ir.addPathPatterns("/*");
         List<String> irs = new ArrayList<>();
         irs.add("/login");
         irs.add("/register");
+        irs.add("/admin/**");
+        InterceptorRegistration interceptor = registry.addInterceptor(adminLoginInterceptor);
+        interceptor.addPathPatterns("/admin/**");
+        interceptor.excludePathPatterns("/admin/login");
+        InterceptorRegistration ir = registry.addInterceptor(loginInterceptor);
+        ir.addPathPatterns("/**");
         ir.excludePathPatterns(irs);
     }
 

@@ -8,11 +8,14 @@
         <result column="password" jdbcType="VARCHAR" property="password"/>
     </resultMap>
 
+
     <resultMap id="AdminMap" type="xdu.backend.pojo.Admin">
         <result column="admin_id" jdbcType="INTEGER" property="adminId"/>
         <result column="password" jdbcType="VARCHAR" property="password"/>
     </resultMap>
     
+  
+  
     <insert id="registerUser" parameterType="xdu.backend.pojo.User">
         insert into user (user_id,user_name,password)
         values (#{id},#{userName},#{password})
@@ -34,6 +37,6 @@
         update user set password = #{password} where user_id = #{id}
     </update>
 
+
+
 </mapper>
-    
-    

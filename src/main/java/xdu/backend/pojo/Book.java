@@ -1,51 +1,38 @@
 package xdu.backend.pojo;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.io.Serializable;
 
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Book implements Serializable {
-    private String book_id;
 
-    private String nname;
+    private String bookID;
 
-    private Short free;
+    private String bookName;
 
-    private static final long serialVersionUID = 1L;
+    private String bookAuthor;
 
-    public String getBook_id() {
-        return book_id;
-    }
+    private String location;
 
-    public void setBook_id(String book_id) {
-        this.book_id = book_id == null ? null : book_id.trim();
-    }
+    private String isbnCode;
 
-    public String getNname() {
-        return nname;
-    }
+    private String isbnNumber;
 
-    public void setNname(String nname) {
-        this.nname = nname == null ? null : nname.trim();
-    }
-
-    public Short getFree() {
-        return free;
-    }
-
-    public void setFree(Short free) {
-        this.free = free;
-    }
+    private boolean available;
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(getClass().getSimpleName());
-        sb.append(" [");
-        sb.append("Hash = ").append(hashCode());
-        sb.append(", book_id=").append(book_id);
-        sb.append(", nname=").append(nname);
-        sb.append(", free=").append(free);
-        sb.append(", serialVersionUID=").append(serialVersionUID);
-        sb.append("]");
-        return sb.toString();
+        String ava = available ? "in library" : "not in library";
+        return bookName +
+                "  author:" + bookAuthor +
+                "  location:" + location +
+                "  id:" + bookID +
+                ava;
     }
+
 }

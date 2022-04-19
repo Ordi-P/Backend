@@ -16,6 +16,9 @@ public interface UserDao {
     Admin getAdminById(Integer id);
 
     int updatePasswordById(String id, String password);
+  
+    boolean getUserEnable(String userID);
+
 }
 
 

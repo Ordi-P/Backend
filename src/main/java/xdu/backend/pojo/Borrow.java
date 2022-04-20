@@ -1,20 +1,22 @@
 package xdu.backend.pojo;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.sql.Date;
 
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
 public class Borrow implements Serializable {
 
-    private String book_id;
+    private String bookID;
 
-    private String user_id;
+    private String userID;
 
-    private Date date;
+    private Date borrowDate;
+
+    public Borrow(String bookID, String userID) {
+        this.bookID = bookID;
+        this.userID = userID;
+        borrowDate = new Date(new java.util.Date().getTime());
+    }
 }

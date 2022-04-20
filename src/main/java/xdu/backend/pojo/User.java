@@ -1,17 +1,10 @@
 package xdu.backend.pojo;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
 import java.io.Serializable;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
 public class User implements Serializable {
 
-    private String userID;
+    private String id;
 
     private String userName;
 
@@ -19,8 +12,42 @@ public class User implements Serializable {
 
     private String password;
 
-    public User(String userID, String userName, String password) {
-        this.userID = userID;
+    public void setEnable(boolean enable) {
+        this.enable = enable;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public boolean getEnable() {
+        return enable;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+
+
+    public User(String id, String userName, String password) {
+        this.id = id;
         this.userName = userName;
         this.password = password;
     }
@@ -28,7 +55,7 @@ public class User implements Serializable {
     @Override
     public String toString() {
         return "User{" +
-                "id='" + userID + '\'' +
+                "id='" + id + '\'' +
                 ", userName='" + userName + '\'' +
                 ", password='" + password + '\'' +
                 '}';

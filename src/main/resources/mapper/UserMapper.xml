@@ -17,9 +17,12 @@
         select * from user where user_id = #{id}
     </select>
 
+    <select id="getUserEnable" parameterType="String" resultType="boolean">
+        select enable from user where user_id = #{id}
+    </select>
+
     <update id="changeNameById">
         update user set user_name = #{newName} where user_id = #{id}
     </update>
-
 
 </mapper>

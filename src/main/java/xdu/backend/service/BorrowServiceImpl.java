@@ -90,6 +90,7 @@ public class BorrowServiceImpl implements BorrowService {
     @Override
     public void reserveBook(String bookID, String userID) throws ReserveConflictException,
                                                                  UserOperationException {
+
         // 首先判断用户状态
         if (userDao.getUserEnable(userID)) {
             // 用户不可用（罚款未交）
@@ -114,6 +115,7 @@ public class BorrowServiceImpl implements BorrowService {
                 bookDao.setBookReservation(bookID, userID, new Timestamp(new java.util.Date().getTime()));
             }
         }
+
     }
 
     /**
@@ -134,12 +136,14 @@ public class BorrowServiceImpl implements BorrowService {
      * @param userID
      */
     @Override
-    public void lendOutBook(String bookID, String userID) throws LendOutConflictException, UserOperationException {
+    public void lendOutBook(String bookID, String userID) throws LendOutConflictException,
+                                                                 UserOperationException {
+        /*
         // 首先判断用户状态
-        if (userDao.getUserEnable(userID)) {
+        if (userDao.getUserEnable(id)) {
             // 用户不可用（罚款未交）
             throw new UserOperationException("Your still have unpaid fines. You cannot borrow any book before you pay for them.");
-        } else if (borrowDao.getUserBorrowNumber(userID) >= PERMITTED_BORROW_NUMBER) {
+        } else if (borrowDao.getUserBorrowNumber(id) >= PERMITTED_BORROW_NUMBER) {
             throw new UserOperationException("You've borrow " + PERMITTED_BORROW_NUMBER +" books. You cannot borrow any more before you return some of them");
         }
 
@@ -153,19 +157,21 @@ public class BorrowServiceImpl implements BorrowService {
             Timestamp expiredTime = new Timestamp(new java.util.Date().getTime() - 4 * 60 * 60);
             if (reservedTime.after(expiredTime)) {
                 // 没过期，再判断预订用户id是不是当前借书用户id
-                if (bookDao.getReserveUserID(bookID).equals(userID)) {
+                if (bookDao.getReserveUserID(bookID).equals(id)) {
                     // 预订用户id和借书用户id相同，可以借书
                     bookDao.updateBookAvailability(bookID, false);
-                    borrowDao.insertBorrowRecord(bookID, userID, new Date(new java.util.Date().getTime()));
+                    borrowDao.insertBorrowRecord(bookID, id, new Date(new java.util.Date().getTime()));
                 } else {
                     throw new LendOutConflictException("The book has been reserved.");
                 }
             } else {
                 // 预订已经过期，可以直接借书
                 bookDao.updateBookAvailability(bookID, false);
-                borrowDao.insertBorrowRecord(bookID, userID, new Date(new java.util.Date().getTime()));
+                borrowDao.insertBorrowRecord(bookID, id, new Date(new java.util.Date().getTime()));
             }
         }
+
+         */
     }
 
 

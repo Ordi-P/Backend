@@ -2,4 +2,10 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="xdu.backend.Dao.BorrowDao">
 
+    <select id="insertBorrowRecord" parameterType="xdu.backend.pojo.Borrow">
+        insert into borrow_record(book_id, user_id, borrow_date)
+        values (#{bookID}, #{userID}, #{borrowDate})
+    </select>
+
+
 </mapper>

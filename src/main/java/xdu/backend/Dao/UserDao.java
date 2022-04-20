@@ -12,5 +12,5 @@ public interface UserDao {
 
     int changeNameById(String newName,String id);
 
-    boolean getUserEnable(String userID);
+    boolean getUserEnable(String id);
 }

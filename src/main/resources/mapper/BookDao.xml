@@ -15,7 +15,7 @@
         select * from book where book_id=#{bookID} and available = 1
     </select>
 
-    <select id="getAllBooks" resultType="Book">
+    <select id="getAllBooks" resultType="xdu.backend.pojo.Book">
         select * from book
     </select>
 

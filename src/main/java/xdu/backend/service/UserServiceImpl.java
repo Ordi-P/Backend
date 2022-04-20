@@ -11,8 +11,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.util.UUID;
 
-import static java.util.UUID.randomUUID;
-
 @Service
 public class UserServiceImpl implements UserService{
 
@@ -31,7 +29,10 @@ public class UserServiceImpl implements UserService{
     public boolean login(User user, HttpSession session, HttpServletRequest request, HttpServletResponse response) {
         String id = user.getId();
         User userDB = userDao.getUserById(id);
-        if(userDB == null) return false;
+        if(userDB == null) {
+            System.out.println("userDB null");
+            return false;
+        }
         if(userDB.getPassword().equals(user.getPassword())){
             String uuid = UUID.randomUUID().toString().replace("-","");
             session.setAttribute("userTicket:" + uuid,userDB);

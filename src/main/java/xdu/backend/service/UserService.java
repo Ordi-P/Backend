@@ -1,5 +1,6 @@
 package xdu.backend.service;
 
+import xdu.backend.pojo.Admin;
 import xdu.backend.pojo.User;
 
 import javax.servlet.http.HttpServletRequest;
@@ -12,4 +13,8 @@ public interface UserService {
     boolean login(User user, HttpSession session, HttpServletRequest request, HttpServletResponse response);
 
     boolean changeNameById(String newName, String id);
+
+    boolean adminLogin(Admin admin, HttpSession session, HttpServletRequest request, HttpServletResponse response);
+
+    boolean updataPasswordById(String id, String password);
 }

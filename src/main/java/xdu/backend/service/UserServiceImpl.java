@@ -3,6 +3,7 @@ package xdu.backend.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import xdu.backend.Dao.UserDao;
+import xdu.backend.pojo.Admin;
 import xdu.backend.pojo.User;
 
 import javax.servlet.http.Cookie;
@@ -58,5 +59,31 @@ public class UserServiceImpl implements UserService{
             return true;
         else
             return false;
+    }
+
+    @Override
+    public boolean adminLogin(Admin admin, HttpSession session, HttpServletRequest request, HttpServletResponse response) {
+        Integer id = admin.getAdminId();
+        Admin adminDB = userDao.getAdminById(id);
+        if(adminDB == null) return false;
+        if(adminDB.getPassword().equals(admin.getPassword())){
+            String uuid = UUID.randomUUID().toString().replace("-","");
+            session.setAttribute(uuid,adminDB);
+            Cookie cookie = new Cookie("adminCookie", uuid);
+            cookie.setMaxAge(30 * 24 * 60 * 60);
+            cookie.setPath(request.getContextPath());
+            response.addCookie(cookie);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean updataPasswordById(String id, String password) {
+        User userDB = userDao.getUserById(id);
+        if(userDB == null) return false;
+        int res = userDao.updatePasswordById(id,password);
+        if (res > 0) return true;
+        return false;
     }
 }

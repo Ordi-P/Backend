@@ -8,6 +8,14 @@
         <result column="password" jdbcType="VARCHAR" property="password"/>
     </resultMap>
 
+
+    <resultMap id="AdminMap" type="xdu.backend.pojo.Admin">
+        <result column="admin_id" jdbcType="INTEGER" property="adminId"/>
+        <result column="password" jdbcType="VARCHAR" property="password"/>
+    </resultMap>
+    
+  
+  
     <insert id="registerUser" parameterType="xdu.backend.pojo.User">
         insert into user (user_id,user_name,password)
         values (#{id},#{userName},#{password})
@@ -17,12 +25,18 @@
         select * from user where user_id = #{id}
     </select>
 
-    <select id="getUserEnable" parameterType="String" resultType="boolean">
-        select enable from user where user_id = #{id}
-    </select>
-
     <update id="changeNameById">
         update user set user_name = #{newName} where user_id = #{id}
     </update>
+
+    <select id="getAdminById" resultMap="AdminMap">
+        select * from admin where admin_id = #{id}
+    </select>
+
+    <update id="updatePasswordById">
+        update user set password = #{password} where user_id = #{id}
+    </update>
+
+
 
 </mapper>

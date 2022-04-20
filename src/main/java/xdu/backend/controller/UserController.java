@@ -1,8 +1,8 @@
 package xdu.backend.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import xdu.backend.pojo.Admin;
 import xdu.backend.pojo.User;
 import xdu.backend.service.UserServiceImpl;
 
@@ -82,5 +82,38 @@ public class UserController {
         return user;
     }
 
+    @RequestMapping(value = "/admin/login", method = RequestMethod.POST)
+    @ResponseBody
+    String adminLogin(@RequestBody Admin admin, HttpSession session, HttpServletRequest request, HttpServletResponse response){
+        if(admin == null) return "false";
+        boolean flag = userService.adminLogin(admin,session,request,response);
+        if(flag){
+            return "success";
+        }else{
+            return "failed";
+        }
+    }
+
+    @RequestMapping("/admin/logout")
+    String adminLogout(HttpServletRequest request, HttpServletResponse response,HttpSession session){
+        Cookie[] cookies = request.getCookies();
+        for (Cookie cookie:cookies) {
+            if (cookie.getName().equals("adminCookie")){
+                session.removeAttribute(cookie.getValue());
+                return "success";
+            }
+        }
+        return "fail";
+    }
+
+    @RequestMapping("/updatePassword")
+    String updatePassword(@RequestBody User user){
+        if(user == null) return "failed";
+        String password = user.getPassword();
+        String id = user.getId();
+        boolean flag = userService.updataPasswordById(id,password);
+        if (flag) return "success";
+        return "failed";
+    }
 
 }

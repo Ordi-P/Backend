@@ -3,16 +3,16 @@
 <mapper namespace="xdu.backend.Dao.BookDao">
 
     <select id="queryBookByISBN" parameterType="String" resultType="xdu.backend.pojo.Book">
-        select * from book where isbn_code=#{isbnCode}
+        select * from book where isbn_code = #{isbnCode}
     </select>
 
     <select id="queryBook" parameterType="String"  resultType="xdu.backend.pojo.Book">
-        select distinct * from book where book_name like concat(concat('%',#{bookInfo}),'%')
-                                     or book_author like concat(concat('%',#{bookInfo}),'%')
+        select distinct * from book where book_name like concat(concat('%', #{bookInfo}), '%')
+                                     or book_author like concat(concat('%', #{bookInfo}), '%')
     </select>
 
     <select id="reserveBook" parameterType="String" resultType="xdu.backend.pojo.Book">
-        select * from book where book_id=#{bookID} and available = 1
+        select * from book where book_id = #{bookID} and available = 1
     </select>
 
     <select id="getAllBooks" resultType="xdu.backend.pojo.Book">
@@ -20,7 +20,7 @@
     </select>
 
     <select id="getAvailable" parameterType="String" resultType="boolean">
-        select available from book where book_id=#{bookID}
+        select available from book where book_id = #{bookID}
     </select>
 
 

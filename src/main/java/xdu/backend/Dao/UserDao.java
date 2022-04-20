@@ -17,7 +17,7 @@ public interface UserDao {
 
     int updatePasswordById(String id, String password);
   
-    boolean getUserEnable(String userID);
+    boolean getUserEnable(String id);
 
 }
 

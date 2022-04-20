@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="xdu.backend.Dao.BookMapper">
+  <resultMap id="BaseResultMap" type="xdu.backend.pojo.Book">
+    <id column="book_id" jdbcType="VARCHAR" property="book_id" />
+    <result column="nname" jdbcType="VARCHAR" property="nname" />
+    <result column="free" jdbcType="DECIMAL" property="free" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    book_id, nname, `free`
+  </sql>
+  <select id="selectByExample" parameterType="xdu.backend.pojo.BookExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    'false' as QUERYID,
+    <include refid="Base_Column_List" />
+    from book
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from book
+    where book_id = #{book_id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from book
+    where book_id = #{book_id,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByExample" parameterType="xdu.backend.pojo.BookExample">
+    delete from book
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="xdu.backend.pojo.Book">
+    insert into book (book_id, nname, `free`
+      )
+    values (#{book_id,jdbcType=VARCHAR}, #{nname,jdbcType=VARCHAR}, #{free,jdbcType=DECIMAL}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="xdu.backend.pojo.Book">
+    insert into book
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="book_id != null">
+        book_id,
+      </if>
+      <if test="nname != null">
+        nname,
+      </if>
+      <if test="free != null">
+        `free`,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="book_id != null">
+        #{book_id,jdbcType=VARCHAR},
+      </if>
+      <if test="nname != null">
+        #{nname,jdbcType=VARCHAR},
+      </if>
+      <if test="free != null">
+        #{free,jdbcType=DECIMAL},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByExampleSelective" parameterType="map">
+    update book
+    <set>
+      <if test="record.book_id != null">
+        book_id = #{record.book_id,jdbcType=VARCHAR},
+      </if>
+      <if test="record.nname != null">
+        nname = #{record.nname,jdbcType=VARCHAR},
+      </if>
+      <if test="record.free != null">
+        `free` = #{record.free,jdbcType=DECIMAL},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update book
+    set book_id = #{record.book_id,jdbcType=VARCHAR},
+      nname = #{record.nname,jdbcType=VARCHAR},
+      `free` = #{record.free,jdbcType=DECIMAL}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="xdu.backend.pojo.Book">
+    update book
+    <set>
+      <if test="nname != null">
+        nname = #{nname,jdbcType=VARCHAR},
+      </if>
+      <if test="free != null">
+        `free` = #{free,jdbcType=DECIMAL},
+      </if>
+    </set>
+    where book_id = #{book_id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="xdu.backend.pojo.Book">
+    update book
+    set nname = #{nname,jdbcType=VARCHAR},
+      `free` = #{free,jdbcType=DECIMAL}
+    where book_id = #{book_id,jdbcType=VARCHAR}
+  </update>
+</mapper>

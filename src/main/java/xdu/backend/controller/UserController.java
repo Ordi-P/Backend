@@ -106,6 +106,21 @@ public class UserController {
         return "fail";
     }
 
+    @RequestMapping("/admin/getAdminByCookie")
+    Admin getAdminByCookie(HttpServletRequest request,HttpSession session){
+        Cookie[] cookies = request.getCookies();
+        if(cookies == null) return null;
+        Cookie cookie = null;
+        for(Cookie item : cookies){
+            if(item.getName().equals("adminCookie")){
+                cookie = item;
+                break;
+            }
+        }
+        Admin admin = (Admin) session.getAttribute(cookie.getValue());
+        return admin;
+    }
+
     @RequestMapping("/updatePassword")
     String updatePassword(@RequestBody User user){
         if(user == null) return "failed";

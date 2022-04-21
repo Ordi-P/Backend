@@ -3,13 +3,12 @@ package xdu.backend.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import xdu.backend.Dao.BookDao;
+import xdu.backend.Dao.BookMetaDao;
 import xdu.backend.Dao.BorrowDao;
 import xdu.backend.Dao.UserDao;
-import xdu.backend.exception.LendOutConflictException;
-import xdu.backend.exception.ReserveConflictException;
-import xdu.backend.exception.UserNotExistsException;
-import xdu.backend.exception.UserOperationException;
+import xdu.backend.exception.*;
 import xdu.backend.pojo.Book;
+import xdu.backend.pojo.BookMeta;
 
 import java.sql.Timestamp;
 import java.util.*;
@@ -18,7 +17,8 @@ import java.sql.Date;
 @Service
 public class BorrowServiceImpl implements BorrowService {
     /** 匹配ISBN的正则表达式*/
-    private static final String ISBNCodeRegex = "";
+    private static final String ISBNCodeRegex = "^\\d*-\\d*-\\d*-\\d*-\\d$";
+    private static final String ISBNNumberRegex = "^\\d{13}$";
     /** 用户可以同时借的书本数量 */
     public static final int PERMITTED_BORROW_NUMBER = 5;
     /** 用户预订书籍的过期时间:4h, Timestamp的单位：s */
@@ -26,6 +26,8 @@ public class BorrowServiceImpl implements BorrowService {
 
     @Autowired
     BookDao bookDao;
+    @Autowired
+    BookMetaDao bookMetaDao;
     @Autowired
     UserDao userDao;
     @Autowired
@@ -38,46 +40,77 @@ public class BorrowServiceImpl implements BorrowService {
      * @return bookList
      */
     @Override
-    public List<Book> searchBook(String bookInfo) {
+    public List<BookMeta> searchBook(String bookInfo) {
         // 如果输入的是空值，返回全部书籍
         if (bookInfo == null || bookInfo.isEmpty()) {
-            return bookDao.getAllBooks();
+            return bookMetaDao.getAllBookMetas();
         }
 
+        // 添加书本元信息，使用HashMap去重，key为isbnCode，value为bookMeta
+        HashMap<String, BookMeta> distinctMap = new HashMap<>();
+        /* version1:
         // 添加书本，使用HashMap去重，key为bookID，value为Book
         HashMap<String, Book> distinctMap = new HashMap<>();
+        */
 
-        if (bookInfo.matches(ISBNCodeRegex)) {
-            // 如果输入格式是ISBN码，返回只有一本书的列表，如果
-            // 不匹配就返回空列表
+        if (bookInfo.length() == 17 && bookInfo.matches(ISBNCodeRegex)) {
+            // 如果输入格式是ISBN码，返回只有一本书的列表，如果未通过这个ISBN
+            // 查询到书籍就返回空列表
+            return bookMetaDao.queryBookMetaByISBNCode(bookInfo);
+            /* version1的实现：返回List<Book>, 再去重
             List<Book> bookList = bookDao.queryBookByISBNCode(bookInfo);
             for (Book book : bookList) {
                 if (book != null) {
                     distinctMap.put(book.getBookID().toString(), book);
                 }
             }
+             */
         } else {
             // 根据书名查询
+            List<BookMeta> bookMetaList = bookMetaDao.queryBookMetaByName(bookInfo);
+            for (BookMeta bookMeta : bookMetaList) {
+                if (bookMeta != null) {
+                    distinctMap.put(bookMeta.getIsbnCode(), bookMeta);
+                }
+            }
+            /* version1:
             List<Book> bookList = bookDao.queryBookByName(bookInfo);
             for (Book book : bookList) {
                 if (book != null) {
                     distinctMap.put(book.getBookID().toString(), book);
                 }
             }
+             */
             // 根据作者查询
+            bookMetaList = bookMetaDao.queryBookMetaByAuthor(bookInfo);
+            for (BookMeta bookMeta : bookMetaList) {
+                if (bookMeta != null) {
+                    distinctMap.put(bookMeta.getIsbnCode(), bookMeta);
+                }
+            }
+            /*
             bookList = bookDao.queryBookByAuthor(bookInfo);
             for (Book book : bookList) {
                 if (book != null) {
                     distinctMap.put(book.getBookID().toString(), book);
                 }
             }
+             */
             // 根据ISBN号查询
+            bookMetaList = bookMetaDao.queryBookMetaByISBNNumber(bookInfo);
+            for (BookMeta bookMeta : bookMetaList) {
+                if (bookMeta != null) {
+                    distinctMap.put(bookMeta.getIsbnCode(), bookMeta);
+                }
+            }
+            /* version1:
             bookList = bookDao.queryBookByISBNNumber(bookInfo);
             for (Book book : bookList) {
                 if (book != null) {
                     distinctMap.put(book.getBookID().toString(), book);
                 }
             }
+             */
         }
 
         return new ArrayList<>(distinctMap.values());
@@ -90,8 +123,18 @@ public class BorrowServiceImpl implements BorrowService {
      * @param userID
      */
     @Override
-    public void reserveBook(String bookID, String userID) throws ReserveConflictException,
-                                                                 UserOperationException {
+    public void reserveBook(long bookID, String userID) throws ReserveConflictException,
+                                                               UserOperationException,
+                                                               BookNotExistsException,
+                                                               UserNotExistsException {
+
+        // 首先判断用户和书籍是否存在
+        if (userDao.getUserById(userID) == null) {
+            throw new UserNotExistsException(userID);
+        }
+        if (bookDao.queryBookByID(bookID) == null) {
+            throw new BookNotExistsException(bookID);
+        }
 
         // 首先判断用户状态
         if (!userDao.getUserEnable(userID)) {
@@ -143,12 +186,16 @@ public class BorrowServiceImpl implements BorrowService {
      * @param userID
      */
     @Override
-    public void lendOutBook(String bookID, String userID) throws LendOutConflictException,
-                                                                 UserOperationException,
-                                                                 UserNotExistsException {
-        // 首先判断用户是否存在
+    public void lendOutBook(long bookID, String userID) throws LendOutConflictException,
+                                                               UserOperationException,
+                                                               UserNotExistsException,
+                                                               BookNotExistsException {
+        // 首先判断用户和书籍是否存在
         if (userDao.getUserById(userID) == null) {
             throw new UserNotExistsException(userID);
+        }
+        if (bookDao.queryBookByID(bookID) == null) {
+            throw new BookNotExistsException(bookID);
         }
 
         // 再判断用户状态

@@ -13,9 +13,9 @@ public interface BookDao {
 
     List<Book> getAllBooks();
 
-    boolean queryBookAvailability(String bookID);
+    boolean queryBookAvailability(long bookID);
 
-    void updateBookAvailability(@Param("bookID") String bookID, @Param("availability") boolean availability);
+    void updateBookAvailability(@Param("bookID") long bookID, @Param("availability") boolean availability);
 
     List<Book> queryBookByISBNCode(String bookInfo);
 
@@ -25,13 +25,15 @@ public interface BookDao {
 
     List<Book> queryBookByISBNNumber(String bookInfo);
 
-    Timestamp queryReservedTime(String bookID);
+    Timestamp queryReservedTime(long bookID);
 
-    void updateBookReservation(@Param("bookID") String bookID, @Param("userID") String userID, @Param("reserveTime") Timestamp reserveTime);
+    void updateBookReservation(@Param("bookID") long bookID, @Param("userID") String userID, @Param("reserveTime") Timestamp reserveTime);
 
-    String queryReserveUserID(String bookID);
+    String queryReserveUserID(long bookID);
 
     List<Book> queryBookByISBN(String isbnCode);
+
+    Book queryBookByID(long bookID);
 
     void addBook(Book book);
 

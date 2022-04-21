@@ -1,10 +1,8 @@
 package xdu.backend.service;
 
-import xdu.backend.exception.LendOutConflictException;
-import xdu.backend.exception.ReserveConflictException;
-import xdu.backend.exception.UserNotExistsException;
-import xdu.backend.exception.UserOperationException;
+import xdu.backend.exception.*;
 import xdu.backend.pojo.Book;
+import xdu.backend.pojo.BookMeta;
 
 import java.util.List;
 
@@ -13,9 +11,9 @@ public interface BorrowService {
      * 查找书籍
      *
      * @param bookInfo
-     * @return
+     * @return 书籍元信息的列表
      */
-    List<Book> searchBook(String bookInfo);
+    List<BookMeta> searchBook(String bookInfo);
 
     /**
      * 预订书籍
@@ -24,8 +22,8 @@ public interface BorrowService {
      * @param userID
      * @throws ReserveConflictException
      */
-    void reserveBook(String bookID, String userID) throws ReserveConflictException,
-            UserOperationException;
+    void reserveBook(long bookID, String userID) throws ReserveConflictException,
+            UserOperationException, BookNotExistsException, UserNotExistsException;
 
     /**
      * 查询我已借阅的书籍
@@ -41,8 +39,8 @@ public interface BorrowService {
      * @param bookID
      * @param userID
      */
-    void lendOutBook(String bookID, String userID) throws LendOutConflictException,
-            UserOperationException, UserNotExistsException, UserNotExistsException;
+    void lendOutBook(long bookID, String userID) throws LendOutConflictException,
+            UserOperationException, UserNotExistsException, UserNotExistsException, BookNotExistsException;
 
     /**
      * 返回某一个isbn下的所有书本

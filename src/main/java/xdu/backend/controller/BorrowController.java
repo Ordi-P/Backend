@@ -3,11 +3,9 @@ package xdu.backend.controller;
 import com.alibaba.fastjson.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import xdu.backend.exception.LendOutConflictException;
-import xdu.backend.exception.ReserveConflictException;
-import xdu.backend.exception.UserNotExistsException;
-import xdu.backend.exception.UserOperationException;
+import xdu.backend.exception.*;
 import xdu.backend.pojo.Book;
+import xdu.backend.pojo.BookMeta;
 import xdu.backend.service.BorrowServiceImpl;
 
 import java.util.ArrayList;
@@ -22,17 +20,17 @@ public class BorrowController {
 
     @RequestMapping(value = "/searchbook", method = RequestMethod.GET)
     @ResponseBody
-    public List<Book> searchBook(@RequestParam(value = "info", required = false) String bookInfo) {
-        List<Book> bookList = borrowService.searchBook(bookInfo);
-        return bookList;
+    public List<BookMeta> searchBook(@RequestParam(value = "info", required = false) String bookInfo) {
+        return borrowService.searchBook(bookInfo);
     }
+
 
     @RequestMapping(value = "/getbook", method = RequestMethod.GET)
     @ResponseBody
     public List<Book> getBook(@RequestParam(value = "isbn_code") String ISBNCode) {
-        List<Book> bookList = borrowService.getBook(ISBNCode);
-        return bookList;
+        return borrowService.getBook(ISBNCode);
     }
+
 
     @RequestMapping(value = "/myborrow", method = RequestMethod.GET)
     @ResponseBody
@@ -41,15 +39,20 @@ public class BorrowController {
         String result = "success";
         // 如果result为“failed”，则错误信息为errorMsg
         String errorMsg = null;
-        List<Book> bookList;
+        List<Book> bookList = new ArrayList<>();
 
-        // 如果用户不存在，queryMyBorrow会抛出异常
-        try {
-            bookList = borrowService.queryMyBorrow(userID);
-        } catch (UserNotExistsException e) {
-            bookList = new ArrayList<>();
+        if (isValidUserID(userID)) {
+            // 如果用户不存在，queryMyBorrow会抛出异常
+            try {
+                bookList = borrowService.queryMyBorrow(userID);
+            } catch (UserNotExistsException e) {
+                bookList = new ArrayList<>();
+                result = "failed";
+                errorMsg = e.getMessage();
+            }
+        } else {
             result = "failed";
-            errorMsg = e.getMessage();
+            errorMsg = "Parameter Error: Check the length of user ID.";
         }
 
         // 把返回结果封装成JSON
@@ -61,22 +64,34 @@ public class BorrowController {
         return json;
     }
 
+
     @RequestMapping(value = "/reservebook", method = RequestMethod.POST)
     @ResponseBody
     public JSONObject reserveBook(@RequestParam("book_id") String bookID,
                                   @RequestParam("user_id") String userID) {
+        // 参数预处理
+        bookID = bookID.trim();
+        userID = userID.trim();
         // 是否预订成功
         String result = "failed";
         // 错误信息
         String errorMsg = null;
 
-        try {
-            borrowService.reserveBook(bookID, userID);
-            result = "success";
-        } catch (ReserveConflictException e) {
-            errorMsg = e.getMessage();
-        } catch (UserOperationException e) {
-            errorMsg = e.getMessage();
+        // 判断参数是否合法
+        if (isValidBookID(bookID) && isValidUserID(userID)) {
+            // 参数ok，开启预订书籍事务
+            try {
+                borrowService.reserveBook(Long.parseLong(bookID), userID);
+                result = "success";
+            } catch (ReserveConflictException |
+                    UserOperationException |
+                    UserNotExistsException |
+                    BookNotExistsException e) {
+                errorMsg = e.getMessage();
+            }
+        } else {
+            result = "failed";
+            errorMsg = "Parameter Error: Check the length of book ID and user ID.";
         }
 
         // 返回体
@@ -86,25 +101,36 @@ public class BorrowController {
 
         return json;
     }
+
 
     @RequestMapping(value = "/lendout", method = RequestMethod.POST)
     @ResponseBody
     public JSONObject lendOut(@RequestParam("book_id") String bookID,
                               @RequestParam("user_id") String userID) {
+
+        // 参数预处理
+        bookID = bookID.trim();
+        userID = userID.trim();
         // 是否借书出库成功
         String result = "failed";
         // 错误信息
         String errorMsg = null;
 
-        try {
-            borrowService.lendOutBook(bookID, userID);
-            result = "success";
-        } catch (LendOutConflictException e) {
-            errorMsg = e.getMessage();
-        } catch (UserOperationException e) {
-            errorMsg = e.getMessage();
-        } catch (UserNotExistsException e) {
-            errorMsg = e.getMessage();
+        // 先判断参数是否符合
+        if (isValidUserID(userID) && isValidBookID(bookID)) {
+            // 没问题，再开启借书出库事务
+            try {
+                borrowService.lendOutBook(Long.parseLong(bookID), userID);
+                result = "success";
+            } catch (LendOutConflictException |
+                    UserOperationException |
+                    UserNotExistsException |
+                    BookNotExistsException e) {
+                errorMsg = e.getMessage();
+            }
+        } else {
+            result = "failed";
+            errorMsg = "Parameter Error: Check the length of book ID and user ID.";
         }
 
         // 返回体
@@ -115,14 +141,21 @@ public class BorrowController {
         return json;
     }
 
+
     /**
-     * 判断userID下的用户是否存在
-     *
+     * 判断userID是否符合id格式
      * @param userID
-     * @return "success" / "failed"
      */
-    private String userExists(String userID) {
-        return "failed";
+    private boolean isValidUserID(String userID) {
+        return userID.matches("^\\d{11}$");
+    }
+
+    /**
+     * 判断bookID是否符合id格式
+     * @param bookID
+     */
+    private boolean isValidBookID(String bookID) {
+        return bookID.matches("^\\d{15}$");
     }
 
 }

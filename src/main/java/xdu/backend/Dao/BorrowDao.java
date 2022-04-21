@@ -9,7 +9,7 @@ import java.util.List;
 @Repository
 public interface BorrowDao {
 
-    void insertBorrowRecord(String bookID, String userID, Date borrowDate);
+    void insertBorrowRecord(long bookID, String userID, Date borrowDate);
 
     int getUserBorrowNumber(String userID);
 

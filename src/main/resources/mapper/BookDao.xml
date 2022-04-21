@@ -3,17 +3,24 @@
 <mapper namespace="xdu.backend.Dao.BookDao">
 
     <select id="getAllBooks" resultType="xdu.backend.pojo.Book">
-        select * from book 
+        select *
+        from book
         limit 100
     </select>
 
-    <update id="updateBookAvailability" parameterType="String">
+    <select id="queryBookByID" parameterType="long" resultType="xdu.backend.pojo.Book">
+        select *
+        from book
+        where book_id = #{bookID}
+    </select>
+
+    <update id="updateBookAvailability" parameterType="long">
         update book
         set available = #{availability}
         where book_id = #{bookID}
     </update>
 
-    <select id="queryBookAvailability" parameterType="String" resultType="boolean">
+    <select id="queryBookAvailability" parameterType="long" resultType="boolean">
         select available
         from book
         where book_id = #{bookID}
@@ -43,7 +50,7 @@
         where isbn_number like concat(concat('%', #{bookInfo}), '%')
     </select>
 
-    <select id="queryReservedTime" parameterType="String" resultType="java.sql.Timestamp">
+    <select id="queryReservedTime" parameterType="long" resultType="java.sql.Timestamp">
         select reserve_time 
         from book 
         where book_id = #{bookID}
@@ -55,7 +62,7 @@
         where book_id = #{bookID}
     </update>
 
-    <select id="queryReserveUserID" parameterType="String" resultType="String">
+    <select id="queryReserveUserID" parameterType="long" resultType="String">
         select user_id 
         from book 
         where book_id = #{bookID}

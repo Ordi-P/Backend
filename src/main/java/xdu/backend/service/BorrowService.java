@@ -2,6 +2,7 @@ package xdu.backend.service;
 
 import xdu.backend.exception.LendOutConflictException;
 import xdu.backend.exception.ReserveConflictException;
+import xdu.backend.exception.UserNotExistsException;
 import xdu.backend.exception.UserOperationException;
 import xdu.backend.pojo.Book;
 
@@ -32,7 +33,7 @@ public interface BorrowService {
      * @param userID
      * @return
      */
-    List<Book> queryMyBorrow(String userID);
+    List<Book> queryMyBorrow(String userID) throws UserNotExistsException;
 
     /**
      * 借书出库
@@ -41,7 +42,7 @@ public interface BorrowService {
      * @param userID
      */
     void lendOutBook(String bookID, String userID) throws LendOutConflictException,
-            UserOperationException, UserNotExistsException;
+            UserOperationException, UserNotExistsException, UserNotExistsException;
 
     /**
      * 返回某一个isbn下的所有书本

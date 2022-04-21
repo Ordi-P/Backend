@@ -2,6 +2,7 @@ package xdu.backend.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import xdu.backend.pojo.Admin;
 import xdu.backend.pojo.User;
 import xdu.backend.service.UserServiceImpl;
@@ -10,6 +11,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.util.Map;
 
 @RestController
 @CrossOrigin
@@ -107,10 +109,17 @@ public class UserController {
     }
 
     @RequestMapping("/updatePassword")
-    String updatePassword(@RequestBody User user){
-        if(user == null) return "failed";
-        String password = user.getPassword();
-        String id = user.getId();
+    String updatePassword(@RequestBody String string){
+        System.out.println(string);
+       if(string == null) return "failed";
+        String password = "";
+        String id = "";
+        id = string.substring(17,28);
+        for(int i = 54; i < string.length(); i++){
+            if(string.charAt(i) == '%') break;
+            password += string.charAt(i);
+        }
+
         boolean flag = userService.updataPasswordById(id,password);
         if (flag) return "success";
         return "failed";

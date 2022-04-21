@@ -24,6 +24,7 @@ public class LoginInterceptor implements HandlerInterceptor {
 
         response.setHeader("Access-Control-Allow-Credentials", "true");
         response.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
+        response.setHeader("Access-Control-Allow-Headers", "true");
         response.setHeader("Set-Cookie", "token=cowshield");
 
         if (null == cookies) {

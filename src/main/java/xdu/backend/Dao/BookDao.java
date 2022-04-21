@@ -1,5 +1,6 @@
 package xdu.backend.Dao;
 
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 import xdu.backend.pojo.Book;
 
@@ -11,11 +12,11 @@ public interface BookDao {
 
     List<Book> getAllBooks();
 
-    void setBookReservation(String bookID, String userID, Timestamp timestamp);
+    boolean queryBookAvailability(String bookID);
 
-    boolean getBookAvailability(String bookID);
+    void updateBookAvailability(@Param("bookID") String bookID, @Param("availability") boolean availability);
 
-    Book queryBookByISBNCode(String bookInfo);
+    List<Book> queryBookByISBNCode(String bookInfo);
 
     List<Book> queryBookByName(String bookInfo);
 
@@ -23,9 +24,11 @@ public interface BookDao {
 
     List<Book> queryBookByISBNNumber(String bookInfo);
 
-    Timestamp getReservedTime(String bookID);
+    Timestamp queryReservedTime(String bookID);
 
-    void updateBookAvailability(String bookID, boolean availability);
+    void updateBookReservation(@Param("bookID") String bookID, @Param("userID") String userID, @Param("reserveTime") Timestamp reserveTime);
 
-    String getReserveUserID(String bookID);
+    String queryReserveUserID(String bookID);
+
+    List<Book> queryBookByISBN(String isbnCode);
 }

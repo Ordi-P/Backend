@@ -8,7 +8,19 @@
     </insert>
 
     <select id="getUserBorrowNumber" parameterType="String" resultType="int">
-        select count(book_id) from borrow_record where user_id = #{userID}
+        select count(book_id)
+        from borrow_record
+        where user_id = #{userID}
+    </select>
+
+    <select id="getUserBorrowList" parameterType="String" resultType="xdu.backend.pojo.Book">
+        select *
+        from book
+        where book_id in (
+            select book_id
+            from borrow_record
+            where user_id = #{userID}
+        )
     </select>
 
 

@@ -11,6 +11,7 @@ import java.util.List;
 public interface BorrowService {
     /**
      * 查找书籍
+     *
      * @param bookInfo
      * @return
      */
@@ -18,15 +19,17 @@ public interface BorrowService {
 
     /**
      * 预订书籍
+     *
      * @param bookID
      * @param userID
      * @throws ReserveConflictException
      */
     void reserveBook(String bookID, String userID) throws ReserveConflictException,
-                                                          UserOperationException;
+            UserOperationException;
 
     /**
      * 查询我已借阅的书籍
+     *
      * @param userID
      * @return
      */
@@ -34,9 +37,18 @@ public interface BorrowService {
 
     /**
      * 借书出库
+     *
      * @param bookID
      * @param userID
      */
     void lendOutBook(String bookID, String userID) throws LendOutConflictException,
-                                                          UserOperationException;
+            UserOperationException, UserNotExistsException;
+
+    /**
+     * 返回某一个isbn下的所有书本
+     *
+     * @param isbnCode
+     * @return
+     */
+    List<Book> getBook(String isbnCode);
 }

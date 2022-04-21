@@ -1,6 +1,7 @@
 package xdu.backend.pojo;
 
 import lombok.*;
+import org.apache.ibatis.annotations.Options;
 
 import java.io.Serializable;
 
@@ -9,7 +10,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 public class Book implements Serializable {
 
-    private String bookID;
+    private long bookID;
 
     private String bookName;
 
@@ -22,6 +23,47 @@ public class Book implements Serializable {
     private String isbnNumber;
 
     private boolean available;
+
+    public Long getBookID() {
+        return bookID;
+    }
+
+    public String getBookName() {
+        return bookName;
+    }
+
+    public String getBookAuthor() {
+        return bookAuthor;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public String getIsbnCode() {
+        return isbnCode;
+    }
+
+    public String getIsbnNumber() {
+        return isbnNumber;
+    }
+
+    public boolean isAvailable() {
+        return available;
+    }
+
+    public void setBookID(long bookID) {
+        this.bookID = bookID;
+    }
+
+    public Book(String bookName, String bookAuthor, String location, String isbnCode, String isbnNumber, boolean available) {
+        this.bookName = bookName;
+        this.bookAuthor = bookAuthor;
+        this.location = location;
+        this.isbnCode = isbnCode;
+        this.isbnNumber = isbnNumber;
+        this.available = available;
+    }
 
     @Override
     public String toString() {

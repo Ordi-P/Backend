@@ -1,5 +1,6 @@
 package xdu.backend.Dao;
 
+import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 import xdu.backend.pojo.Book;
@@ -31,4 +32,8 @@ public interface BookDao {
     String queryReserveUserID(String bookID);
 
     List<Book> queryBookByISBN(String isbnCode);
+
+    void addBook(Book book);
+
+    int deleteBook(Long book_id);
 }

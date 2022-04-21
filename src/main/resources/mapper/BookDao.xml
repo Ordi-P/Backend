@@ -67,5 +67,15 @@
         where isbn_code = #{isbnCode}
     </select>
 
+    <insert id="addBook" useGeneratedKeys="true" keyProperty="bookID">
+        insert into book(book_name,book_author,location,isbn_code,isbn_number,available)
+        values (#{bookName}, #{bookAuthor}, #{location}, #{isbnCode}, #{isbnNumber}, #{available})
+    </insert>
+
+    <delete id="deleteBook">
+        delete from book
+        where book_id = #{book_id}
+    </delete>
+
 </mapper>
 

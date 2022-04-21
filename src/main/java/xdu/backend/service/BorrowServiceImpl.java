@@ -53,7 +53,7 @@ public class BorrowServiceImpl implements BorrowService {
             List<Book> bookList = bookDao.queryBookByISBNCode(bookInfo);
             for (Book book : bookList) {
                 if (book != null) {
-                    distinctMap.put(book.getBookID(), book);
+                    distinctMap.put(book.getBookID().toString(), book);
                 }
             }
         } else {
@@ -61,21 +61,21 @@ public class BorrowServiceImpl implements BorrowService {
             List<Book> bookList = bookDao.queryBookByName(bookInfo);
             for (Book book : bookList) {
                 if (book != null) {
-                    distinctMap.put(book.getBookID(), book);
+                    distinctMap.put(book.getBookID().toString(), book);
                 }
             }
             // 根据作者查询
             bookList = bookDao.queryBookByAuthor(bookInfo);
             for (Book book : bookList) {
                 if (book != null) {
-                    distinctMap.put(book.getBookID(), book);
+                    distinctMap.put(book.getBookID().toString(), book);
                 }
             }
             // 根据ISBN号查询
             bookList = bookDao.queryBookByISBNNumber(bookInfo);
             for (Book book : bookList) {
                 if (book != null) {
-                    distinctMap.put(book.getBookID(), book);
+                    distinctMap.put(book.getBookID().toString(), book);
                 }
             }
         }

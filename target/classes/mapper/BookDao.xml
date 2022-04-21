@@ -2,27 +2,80 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="xdu.backend.Dao.BookDao">
 
-    <select id="queryBookByISBN" parameterType="String" resultType="xdu.backend.pojo.Book">
-        select * from book where isbn_code=#{isbnCode}
-    </select>
-
-    <select id="queryBook" parameterType="String"  resultType="xdu.backend.pojo.Book">
-        select distinct * from book where book_name like concat(concat('%',#{bookInfo}),'%')
-                                     or book_author like concat(concat('%',#{bookInfo}),'%')
-    </select>
-
-    <select id="reserveBook" parameterType="String" resultType="xdu.backend.pojo.Book">
-        select * from book where book_id=#{bookID} and available = 1
-    </select>
-
     <select id="getAllBooks" resultType="xdu.backend.pojo.Book">
-        select * from book
+        select * from book 
+        limit 100
     </select>
 
-    <select id="getAvailable" parameterType="String" resultType="boolean">
-        select available from book where book_id=#{bookID}
+    <update id="updateBookAvailability" parameterType="String">
+        update book
+        set available = #{availability}
+        where book_id = #{bookID}
+    </update>
+
+    <select id="queryBookAvailability" parameterType="String" resultType="boolean">
+        select available
+        from book
+        where book_id = #{bookID}
     </select>
 
+    <select id="queryBookByISBNCode" parameterType="String" resultType="xdu.backend.pojo.Book">
+        select *
+        from book
+        where isbn_code = #{isbnCode}
+    </select>
+
+    <select id="queryBookByName" parameterType="String" resultType="xdu.backend.pojo.Book">
+        select *
+        from book
+        where book_name like concat(concat('%', #{bookInfo}), '%')
+    </select>
+
+    <select id="queryBookByAuthor" parameterType="String" resultType="xdu.backend.pojo.Book">
+        select * 
+        from book 
+        where book_author like concat(concat('%', #{bookInfo}), '%')
+    </select>
+
+    <select id="queryBookByISBNNumber" parameterType="String" resultType="xdu.backend.pojo.Book">
+        select * 
+        from book 
+        where isbn_number like concat(concat('%', #{bookInfo}), '%')
+    </select>
+
+    <select id="queryReservedTime" parameterType="String" resultType="java.sql.Timestamp">
+        select reserve_time 
+        from book 
+        where book_id = #{bookID}
+    </select>
+
+    <update id="updateBookReservation">
+        update book
+        set reserve_user = #{userID} reserve_time = #{reserveTime}
+        where book_id = #{bookID}
+    </update>
+
+    <select id="queryReserveUserID" parameterType="String" resultType="String">
+        select user_id 
+        from book 
+        where book_id = #{bookID}
+    </select>
+
+    <select id="queryBookByISBN" parameterType="String" resultType="xdu.backend.pojo.Book">
+        select * 
+        from book 
+        where isbn_code = #{isbnCode}
+    </select>
+
+    <insert id="addBook" useGeneratedKeys="true" keyProperty="bookID">
+        insert into book(book_name,book_author,location,isbn_code,isbn_number,available)
+        values (#{bookName}, #{bookAuthor}, #{location}, #{isbnCode}, #{isbnNumber}, #{available})
+    </insert>
+
+    <delete id="deleteBook">
+        delete from book
+        where book_id = #{book_id}
+    </delete>
 
 </mapper>
 

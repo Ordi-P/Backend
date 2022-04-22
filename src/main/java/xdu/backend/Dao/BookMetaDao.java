@@ -17,4 +17,10 @@ public interface BookMetaDao {
     List<BookMeta> queryBookMetaByISBNNumber(String isbnNumber);
 
     List<BookMeta> getAllBookMetas();
+
+    void updateBookMeta(String isbn_code, int deltaNum);
+
+    void insertBookMeta(BookMeta bookMeta);
+
+    void deleteBookMeta(String isbn_code);
 }

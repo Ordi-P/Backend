@@ -32,5 +32,19 @@
         limit 50
     </select>
 
+    <update id="updateBookMeta">
+        update book_meta
+        set amount = amount + #{deltaNum}
+        where isbn_code = #{isbn_code}
+    </update>
 
+    <insert id="insertBookMeta">
+        insert into book_meta
+        values (#{isbnCode}, #{isbnNumber}, #{bookName}, #{bookAuthor}, #{location}, #{amount})
+    </insert>
+
+    <delete id="deleteBookMeta">
+        delete from book_meta
+        where isbn_code = #{isbn_code}
+    </delete>
 </mapper>

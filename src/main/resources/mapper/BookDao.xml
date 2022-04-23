@@ -75,8 +75,8 @@
     </select>
 
     <insert id="addBook" useGeneratedKeys="true" keyProperty="bookID">
-        insert into book(book_name,book_author,location,isbn_code,isbn_number,available)
-        values (#{bookName}, #{bookAuthor}, #{location}, #{isbnCode}, #{isbnNumber}, #{available})
+        insert into book(book_name,book_author,location,isbn_code,isbn_number,available,reserve_time,reserve_user)
+        values (#{bookName}, #{bookAuthor}, #{location}, #{isbnCode}, #{isbnNumber}, #{available}, #{reserve_time}, #{reserve_user})
     </insert>
 
     <delete id="deleteBook">

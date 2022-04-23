@@ -4,6 +4,7 @@ import lombok.*;
 import org.apache.ibatis.annotations.Options;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 
 @Data
 @NoArgsConstructor
@@ -23,6 +24,26 @@ public class Book implements Serializable {
     private String isbnNumber;
 
     private boolean available;
+
+    private Timestamp reserve_time;
+
+    private String reserve_user;
+
+    public Timestamp getReserve_time() {
+        return reserve_time;
+    }
+
+    public void setReserve_time(Timestamp reserve_time) {
+        this.reserve_time = reserve_time;
+    }
+
+    public String getReserve_user() {
+        return reserve_user;
+    }
+
+    public void setReserve_user(String reserve_user) {
+        this.reserve_user = reserve_user;
+    }
 
     public Long getBookID() {
         return bookID;
@@ -56,13 +77,15 @@ public class Book implements Serializable {
         this.bookID = bookID;
     }
 
-    public Book(String bookName, String bookAuthor, String location, String isbnCode, String isbnNumber, boolean available) {
+    public Book(String bookName, String bookAuthor, String location, String isbnCode, String isbnNumber, boolean available, Timestamp reserve_time, String reserve_user) {
         this.bookName = bookName;
         this.bookAuthor = bookAuthor;
         this.location = location;
         this.isbnCode = isbnCode;
         this.isbnNumber = isbnNumber;
         this.available = available;
+        this.reserve_time = reserve_time;
+        this.reserve_user = reserve_user;
     }
 
     @Override

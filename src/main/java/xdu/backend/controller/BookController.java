@@ -11,7 +11,9 @@ import xdu.backend.Dao.BookMetaDao;
 import xdu.backend.pojo.Book;
 import xdu.backend.pojo.BookMeta;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -23,7 +25,7 @@ public class BookController {
     BookMetaDao bookMetaDao;
 
     @GetMapping(value = "/addbook")
-    JSONObject addBook(@RequestParam(value = "book_name", required = true) String book_name,
+    public JSONObject addBook(@RequestParam(value = "book_name", required = true) String book_name,
                    @RequestParam(value = "book_author", required = true) String book_author,
                    @RequestParam(value = "isbn_code", required = true) String isbn_code,
                    @RequestParam(value = "isbn_number", required = true) String isbn_number,
@@ -34,7 +36,14 @@ public class BookController {
 
         try{
             for (int i = 0; i < num; i++) {
-                Book book = new Book(book_name, book_author, "A-10", isbn_code, isbn_number, true);
+
+                Date date = new Date();
+                long tem = date.getTime() - 4 * 60 * 60 * 1000 - 1;
+                date.setTime(tem);
+                Timestamp reserve_time = new Timestamp(date.getTime());
+
+                Book book = new Book(book_name, book_author, "A-"+isbn_number.substring(5, 7), isbn_code, isbn_number, true, reserve_time, "13300000001");
+
                 bookDao.addBook(book);
                 book_id_list.add(book.getBookID());
             }
@@ -57,7 +66,7 @@ public class BookController {
     }
 
     @GetMapping(value = "/deletebook")
-    JSONObject deleteBook(@RequestParam(value = "book_id", required = true) Long book_id){
+    public JSONObject deleteBook(@RequestParam(value = "book_id", required = true) Long book_id){
         JSONObject json = new JSONObject();
 
         try{

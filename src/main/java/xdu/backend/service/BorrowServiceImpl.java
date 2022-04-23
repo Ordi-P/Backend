@@ -53,10 +53,10 @@ public class BorrowServiceImpl implements BorrowService {
         HashMap<String, Book> distinctMap = new HashMap<>();
         */
 
-        if (bookInfo.length() == 17 && bookInfo.matches(ISBNCodeRegex)) {
+        if (bookInfo.matches(ISBNNumberRegex)) {
             // 如果输入格式是ISBN码，返回只有一本书的列表，如果未通过这个ISBN
             // 查询到书籍就返回空列表
-            return bookMetaDao.queryBookMetaByISBNCode(bookInfo);
+            return bookMetaDao.queryBookMetaByISBN(bookInfo);
             /* version1的实现：返回List<Book>, 再去重
             List<Book> bookList = bookDao.queryBookByISBNCode(bookInfo);
             for (Book book : bookList) {
@@ -152,12 +152,13 @@ public class BorrowServiceImpl implements BorrowService {
             // 未被借出，如果书已被预订，判断上一次预订是否过期
             Timestamp reservedTime = bookDao.queryReservedTime(bookID);
             Timestamp expiredTime = new Timestamp(new java.util.Date().getTime() - MAX_RESERVE_TIME);
-            if (reservedTime.after(expiredTime)) {
-                // 没过期，抛出异常
-                throw new ReserveConflictException("The book has been reserved.");
-            } else {
+
+            if (reservedTime == null || reservedTime.before(expiredTime)) {
                 // 过期了，可以预订
                 bookDao.updateBookReservation(bookID, userID, new Timestamp(new java.util.Date().getTime()));
+            } else {
+                // 没过期，抛出异常
+                throw new ReserveConflictException("The book has been reserved.");
             }
         }
 
@@ -214,30 +215,34 @@ public class BorrowServiceImpl implements BorrowService {
             // 如果书已被预订，首先判断预订是否过期
             Timestamp reservedTime = bookDao.queryReservedTime(bookID);
             Timestamp expiredTime = new Timestamp(new java.util.Date().getTime() - 4 * 60 * 60);
-            if (reservedTime.after(expiredTime)) {
+
+            if (reservedTime == null || reservedTime.before(expiredTime)) {
+                // 预订已经过期，可以直接借书，借书记录插入当前时间
+                bookDao.updateBookAvailability(bookID, false);
+                borrowDao.insertBorrowRecord(bookID, userID, new Date(new java.util.Date().getTime()));
+            } else {
                 // 没过期，再判断预订用户id是不是当前借书用户id
                 if (bookDao.queryReserveUserID(bookID).equals(userID)) {
                     // 预订用户id和借书用户id相同，可以借书
                     bookDao.updateBookAvailability(bookID, false);
                     borrowDao.insertBorrowRecord(bookID, userID, new Date(new java.util.Date().getTime()));
+                    String isbnNumber = bookDao.queryISBNNumberByID(bookID);
+                    bookDao.undoBookReservation(userID, isbnNumber, new Timestamp(new java.util.Date().getTime() - 4 * 60 * 60 - 1));
                 } else {
                     throw new LendOutConflictException("The book has been reserved.");
                 }
-            } else {
-                // 预订已经过期，可以直接借书，借书记录插入当前时间
-                bookDao.updateBookAvailability(bookID, false);
-                borrowDao.insertBorrowRecord(bookID, userID, new Date(new java.util.Date().getTime()));
             }
+
         }
 
     }
 
     /**
      * 返回某一个isbn下的所有书本
-     * @param isbnCode
+     * @param isbnNumber
      * @return
      */
-    public List<Book> getBook(String isbnCode) {
-        return bookDao.queryBookByISBNCode(isbnCode);
+    public List<Book> getBook(String isbnNumber) {
+        return bookDao.queryBookByISBNNumber(isbnNumber);
     }
 }

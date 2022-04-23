@@ -40,13 +40,13 @@ public interface BorrowService {
      * @param userID
      */
     void lendOutBook(long bookID, String userID) throws LendOutConflictException,
-            UserOperationException, UserNotExistsException, UserNotExistsException, BookNotExistsException;
+            UserOperationException, UserNotExistsException, BookNotExistsException;
 
     /**
      * 返回某一个isbn下的所有书本
      *
-     * @param isbnCode
+     * @param isbnNumber
      * @return
      */
-    List<Book> getBook(String isbnCode);
+    List<Book> getBook(String isbnNumber);
 }

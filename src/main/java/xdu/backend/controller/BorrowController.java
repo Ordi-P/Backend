@@ -27,8 +27,8 @@ public class BorrowController {
 
     @RequestMapping(value = "/getbook", method = RequestMethod.GET)
     @ResponseBody
-    public List<Book> getBook(@RequestParam(value = "isbn_code") String ISBNCode) {
-        return borrowService.getBook(ISBNCode);
+    public List<Book> getBook(@RequestParam(value = "isbn_number") String isbnNumber) {
+        return borrowService.getBook(isbnNumber);
     }
 
 
@@ -155,7 +155,7 @@ public class BorrowController {
      * @param bookID
      */
     private boolean isValidBookID(String bookID) {
-        return bookID.matches("^\\d{15}$");
+        return bookID.matches("^\\d{8}$");
     }
 
 }

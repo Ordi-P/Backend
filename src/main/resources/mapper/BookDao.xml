@@ -3,9 +3,7 @@
 <mapper namespace="xdu.backend.Dao.BookDao">
 
     <select id="getAllBooks" resultType="xdu.backend.pojo.Book">
-        select *
-        from book
-        limit 100
+        select * from book limit 100
     </select>
 
     <select id="queryBookByID" parameterType="long" resultType="xdu.backend.pojo.Book">
@@ -14,7 +12,7 @@
         where book_id = #{bookID}
     </select>
 
-    <update id="updateBookAvailability" parameterType="long">
+    <update id="updateBookAvailability">
         update book
         set available = #{availability}
         where book_id = #{bookID}
@@ -29,7 +27,7 @@
     <select id="queryBookByISBNCode" parameterType="String" resultType="xdu.backend.pojo.Book">
         select *
         from book
-        where isbn_code = #{isbnCode}
+        where isbn_code = concat(concat('%', #{isbnCode}), '%')
     </select>
 
     <select id="queryBookByName" parameterType="String" resultType="xdu.backend.pojo.Book">
@@ -58,7 +56,7 @@
 
     <update id="updateBookReservation">
         update book
-        set reserve_user = #{userID} reserve_time = #{reserveTime}
+        set reserve_user = #{userID}, reserve_time = #{reserveTime}
         where book_id = #{bookID}
     </update>
 
@@ -71,8 +69,20 @@
     <select id="queryBookByISBN" parameterType="String" resultType="xdu.backend.pojo.Book">
         select * 
         from book 
-        where isbn_code = #{isbnCode}
+        where isbn_number = #{isbnNumber}
     </select>
+
+    <select id="queryISBNNumberByID" parameterType="long" resultType="String">
+        select isbn_number
+        from book
+        where book_id = #{bookID}
+    </select>
+
+    <update id="undoBookReserve">
+        update book
+        set reserve_time = #{reserveTime}
+        where isbn_number = #{isbnNumber} and reserve_user = #{userID}
+    </update>
 
     <insert id="addBook" useGeneratedKeys="true" keyProperty="bookID">
         insert into book(book_name,book_author,location,isbn_code,isbn_number,available,reserve_time,reserve_user)

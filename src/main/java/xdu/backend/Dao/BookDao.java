@@ -31,11 +31,15 @@ public interface BookDao {
 
     String queryReserveUserID(long bookID);
 
-    List<Book> queryBookByISBN(String isbnCode);
+    List<Book> queryBookByISBN(String isbnNumber);
 
     Book queryBookByID(long bookID);
 
     void addBook(Book book);
 
     int deleteBook(Long book_id);
+
+    String queryISBNNumberByID(long bookID);
+
+    void undoBookReservation(@Param("userID") String userID, @Param("isbnNumber") String isbnNumber, @Param("reserveTime") Timestamp reserveTime);
 }

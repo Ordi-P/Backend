@@ -22,7 +22,7 @@ public class BorrowServiceImpl implements BorrowService {
     /** 用户可以同时借的书本数量 */
     public static final int PERMITTED_BORROW_NUMBER = 5;
     /** 用户预订书籍的过期时间:4h, Timestamp的单位：s */
-    public static final int MAX_RESERVE_TIME = 4 * 60 * 60;
+    public static final int MAX_RESERVE_TIME = 4 * 60 * 60 * 1000;
 
     @Autowired
     BookDao bookDao;
@@ -214,7 +214,7 @@ public class BorrowServiceImpl implements BorrowService {
         } else {
             // 如果书已被预订，首先判断预订是否过期
             Timestamp reservedTime = bookDao.queryReservedTime(bookID);
-            Timestamp expiredTime = new Timestamp(new java.util.Date().getTime() - 4 * 60 * 60);
+            Timestamp expiredTime = new Timestamp(new java.util.Date().getTime() - MAX_RESERVE_TIME);
 
             if (reservedTime == null || reservedTime.before(expiredTime)) {
                 // 预订已经过期，可以直接借书，借书记录插入当前时间
@@ -227,7 +227,7 @@ public class BorrowServiceImpl implements BorrowService {
                     bookDao.updateBookAvailability(bookID, false);
                     borrowDao.insertBorrowRecord(bookID, userID, new Date(new java.util.Date().getTime()));
                     String isbnNumber = bookDao.queryISBNNumberByID(bookID);
-                    bookDao.undoBookReservation(userID, isbnNumber, new Timestamp(new java.util.Date().getTime() - 4 * 60 * 60 - 1));
+                    bookDao.undoBookReservation(userID, isbnNumber, new Timestamp(new java.util.Date().getTime() - MAX_RESERVE_TIME - 1));
                 } else {
                     throw new LendOutConflictException("The book has been reserved.");
                 }

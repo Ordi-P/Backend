@@ -1,7 +1,6 @@
 package xdu.backend.pojo;
 
 import lombok.*;
-import org.apache.ibatis.annotations.Options;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
@@ -25,24 +24,28 @@ public class Book implements Serializable {
 
     private boolean available;
 
-    private Timestamp reserve_time;
+    private Timestamp reserveTime;
 
-    private String reserve_user;
+    private String reserveUser;
 
-    public Timestamp getReserve_time() {
-        return reserve_time;
+    public Timestamp getReserveTime() {
+        return reserveTime;
     }
 
-    public void setReserve_time(Timestamp reserve_time) {
-        this.reserve_time = reserve_time;
+    public void setReserveTime(Timestamp reserveTime) {
+        this.reserveTime = reserveTime;
     }
 
-    public String getReserve_user() {
-        return reserve_user;
+    public String getReserveUser() {
+        return reserveUser;
     }
 
-    public void setReserve_user(String reserve_user) {
-        this.reserve_user = reserve_user;
+    public void setReserveUser(String reserveUser) {
+        this.reserveUser = reserveUser;
+    }
+
+    public void setBookName(String bookName) {
+        this.bookName = bookName;
     }
 
     public Long getBookID() {
@@ -77,15 +80,15 @@ public class Book implements Serializable {
         this.bookID = bookID;
     }
 
-    public Book(String bookName, String bookAuthor, String location, String isbnCode, String isbnNumber, boolean available, Timestamp reserve_time, String reserve_user) {
+    public Book(String bookName, String bookAuthor, String location, String isbnCode, String isbnNumber, boolean available, Timestamp reserveTime, String reserveUser) {
         this.bookName = bookName;
         this.bookAuthor = bookAuthor;
         this.location = location;
         this.isbnCode = isbnCode;
         this.isbnNumber = isbnNumber;
         this.available = available;
-        this.reserve_time = reserve_time;
-        this.reserve_user = reserve_user;
+        this.reserveTime = reserveTime;
+        this.reserveUser = reserveUser;
     }
 
     @Override

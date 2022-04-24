@@ -243,6 +243,6 @@ public class BorrowServiceImpl implements BorrowService {
      * @return
      */
     public List<Book> getBook(String isbnNumber) {
-        return bookDao.queryBookByISBNNumber(isbnNumber);
+        return bookDao.queryBookByISBN(isbnNumber);
     }
 }

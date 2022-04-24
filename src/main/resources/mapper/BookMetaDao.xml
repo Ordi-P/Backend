@@ -11,7 +11,7 @@
     <select id="queryBookMetaByISBNCode" parameterType="String" resultType="xdu.backend.pojo.BookMeta">
         select *
         from book_meta
-        where isbn_code = concat(concat('%', #{isbnCode}), '%')
+        where isbn_code like concat(concat('%', #{isbnCode}), '%')
     </select>
 
     <select id="queryBookMetaByName" parameterType="String" resultType="xdu.backend.pojo.BookMeta">

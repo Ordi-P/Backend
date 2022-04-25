@@ -232,7 +232,6 @@ public class BorrowServiceImpl implements BorrowService {
                     throw new LendOutConflictException("The book has been reserved.");
                 }
             }
-
         }
 
     }

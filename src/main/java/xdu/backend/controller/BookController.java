@@ -3,10 +3,7 @@ package xdu.backend.controller;
 import com.alibaba.fastjson.JSONObject;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import xdu.backend.Dao.BookDao;
 import xdu.backend.Dao.BookMetaDao;
 import xdu.backend.pojo.Book;
@@ -25,7 +22,7 @@ public class BookController {
     @Autowired
     BookMetaDao bookMetaDao;
 
-    @GetMapping(value = "/addbook")
+    @RequestMapping(value = "/addbook", method = RequestMethod.POST)
     public JSONObject addBook(@RequestParam(value = "book_name", required = true) String book_name,
                    @RequestParam(value = "book_author", required = true) String book_author,
                    @RequestParam(value = "isbn_code", required = false) String isbn_code,

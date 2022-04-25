@@ -26,7 +26,7 @@ public class WebConfig implements WebMvcConfigurer {
         irs.add("/register");
         irs.add("/admin/**");
         irs.add("/deletebook");
-        irs.add("/addbok");
+        irs.add("/addbook");
         InterceptorRegistration interceptor = registry.addInterceptor(adminLoginInterceptor);
         interceptor.addPathPatterns("/admin/**");
         interceptor.excludePathPatterns("/admin/login");

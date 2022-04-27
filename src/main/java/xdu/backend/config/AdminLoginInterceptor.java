@@ -16,7 +16,7 @@ public class AdminLoginInterceptor implements HandlerInterceptor {
 
     /** 解决跨域：请求头允许包含的自定义字段 */
     private static final String ENABLE_HEADERS = "Content-Type,user_id,book_id,book_name,book_author," +
-            "isbn_code,isbn_number,info,id,password";
+            "isbn_code,isbn_number,info,id,password,num";
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
@@ -25,9 +25,9 @@ public class AdminLoginInterceptor implements HandlerInterceptor {
 
         // 解决跨域问题，设置允许的自定义请求头参数字段：
         response.setHeader("Access-Control-Allow-Credentials", "true");
-        response.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
+        response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
         response.setHeader("Access-Control-Allow-Headers", ENABLE_HEADERS);
-        response.setHeader("Set-Cookie", "token=cowshield");
+        // response.setHeader("Set-Cookie", "token=cowshield");
 
         if (null == cookies) {
             response.getWriter().write("failed");

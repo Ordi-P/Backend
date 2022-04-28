@@ -52,7 +52,7 @@ public class BookController {
             }
             List<BookMeta> bookMetas = bookMetaDao.queryBookMetaByISBNCode(isbn_code);
             if (bookMetas.size() == 0){
-                BookMeta bookMeta = new BookMeta(isbn_code, book_name, book_author, "A-10", isbn_number, 0);
+                BookMeta bookMeta = new BookMeta(isbn_code, book_name, book_author, "A-" + isbn_number.substring(10, 12), isbn_number, 0);
                 bookMetaDao.insertBookMeta(bookMeta);
             }
             bookMetaDao.updateBookMeta(isbn_code, num);

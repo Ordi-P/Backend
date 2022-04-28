@@ -34,17 +34,17 @@ public class BorrowController {
 
     @RequestMapping(value = "/myborrow", method = RequestMethod.GET)
     @ResponseBody
-    public JSONObject myBorrow(@RequestParam("user_id") String userID) {
+    public JSONObject myBorrow(@RequestBody String user_id) {
         // 是否为有效请求（userID是否存在）
         String result = "success";
         // 如果result为“failed”，则错误信息为errorMsg
         String errorMsg = null;
         List<Book> bookList = new ArrayList<>();
 
-        if (isValidUserID(userID)) {
+        if (isValidUserID(user_id)) {
             // 如果用户不存在，queryMyBorrow会抛出异常
             try {
-                bookList = borrowService.queryMyBorrow(userID);
+                bookList = borrowService.queryMyBorrow(user_id);
             } catch (UserNotExistsException e) {
                 bookList = new ArrayList<>();
                 result = "failed";

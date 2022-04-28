@@ -3,6 +3,7 @@ package xdu.backend.service;
 import xdu.backend.exception.*;
 import xdu.backend.pojo.Book;
 import xdu.backend.pojo.BookMeta;
+import xdu.backend.vo.UserBorrowInfo;
 
 import java.util.List;
 
@@ -31,7 +32,7 @@ public interface BorrowService {
      * @param userID
      * @return
      */
-    List<Book> queryMyBorrow(String userID) throws UserNotExistsException;
+    List<UserBorrowInfo> queryMyBorrow(String userID) throws UserNotExistsException;
 
     /**
      * 借书出库
@@ -49,4 +50,12 @@ public interface BorrowService {
      * @return
      */
     List<Book> getBook(String isbnNumber);
+
+    /**
+     * 续借书籍（10天）
+     *
+     * @param bookID
+     * @param userID
+     */
+    void renew(long bookID, String userID) throws UserNotExistsException, BookNotExistsException, UserOperationException, BorrowTimeExpireException;
 }

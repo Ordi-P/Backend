@@ -41,4 +41,6 @@ public interface BookDao {
     String queryISBNNumberByID(long bookID);
 
     void undoBookReservation(@Param("userID") String userID, @Param("isbnNumber") String isbnNumber, @Param("reserveTime") Timestamp reserveTime);
+
+    String queryBookNameByID(long bookID);
 }

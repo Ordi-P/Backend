@@ -1,5 +1,6 @@
 package xdu.backend.Dao;
 
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 import xdu.backend.pojo.Admin;
 import xdu.backend.pojo.User;
@@ -19,6 +20,7 @@ public interface UserDao {
   
     boolean getUserEnable(String id);
 
+    void updateUserEnable(@Param("enable") boolean enable, @Param("id") String id);
 }
 
 

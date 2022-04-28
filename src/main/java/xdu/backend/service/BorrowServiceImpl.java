@@ -9,6 +9,7 @@ import xdu.backend.Dao.UserDao;
 import xdu.backend.exception.*;
 import xdu.backend.pojo.Book;
 import xdu.backend.pojo.BookMeta;
+import xdu.backend.vo.UserBorrowInfo;
 
 import java.sql.Timestamp;
 import java.util.*;
@@ -19,6 +20,10 @@ public class BorrowServiceImpl implements BorrowService {
     /** 匹配ISBN的正则表达式*/
     private static final String ISBNCodeRegex = "^\\d*-\\d*-\\d*-\\d*-\\d$";
     private static final String ISBNNumberRegex = "^\\d{13}$";
+    /** 允许借书的时长：30天 */
+    private static final long BORROW_DURATION = 30 * 24 * 60 * 60 * 1000;
+    /** 续借时间：10天 */
+    private static final long RENEW_TIME = 10 * 24 * 60 * 60 * 1000;
     /** 用户可以同时借的书本数量 */
     public static final int PERMITTED_BORROW_NUMBER = 5;
     /** 用户预订书籍的过期时间:4h, Timestamp的单位：s */
@@ -171,13 +176,13 @@ public class BorrowServiceImpl implements BorrowService {
      * @return bookList
      */
     @Override
-    public List<Book> queryMyBorrow(String userID) throws UserNotExistsException {
+    public List<UserBorrowInfo> queryMyBorrow(String userID) throws UserNotExistsException {
         // 如果用户不存在，抛出异常信息
         if (userDao.getUserById(userID) == null) {
             throw new UserNotExistsException(userID);
         }
 
-        return borrowDao.getUserBorrowList(userID);
+        return borrowDao.queryUserBorrowInfoByID(userID);
     }
 
     /**
@@ -241,7 +246,45 @@ public class BorrowServiceImpl implements BorrowService {
      * @param isbnNumber
      * @return
      */
+    @Override
     public List<Book> getBook(String isbnNumber) {
         return bookDao.queryBookByISBN(isbnNumber);
     }
+
+    /**
+     *
+     * @param bookID
+     * @param userID
+     */
+    @Override
+    public void renew(long bookID, String userID) throws UserNotExistsException, BookNotExistsException, UserOperationException, BorrowTimeExpireException {
+        // 首先判断用户和书籍是否存在
+        if (userDao.getUserById(userID) == null) {
+            throw new UserNotExistsException(userID);
+        }
+        if (bookDao.queryBookByID(bookID) == null) {
+            throw new BookNotExistsException(bookID);
+        }
+        // 再判断用户状态
+        if (!userDao.getUserEnable(userID)) {
+            // 用户不可用（罚款未交）
+            throw new UserOperationException("Your still have unpaid fines. You cannot borrow any book before you pay for them.");
+        }
+        // 再判断用户是否为借书人
+        if (!userID.equals(borrowDao.queryBorrowerByBookID(bookID))) {
+            throw new UserOperationException("The user with ID:" + userID + " is not the borrower of book " + bookID);
+        }
+
+        // 都正常，再判断借书时间是否逾期
+        Date borrowDate = borrowDao.queryBorrowDateByBookID(bookID);
+        if (borrowDate.before(new Date(new java.util.Date().getTime() - BORROW_DURATION))) {
+            // 如果书已逾期，不允许续借，并且设置用户enable为false
+            userDao.updateUserEnable(false, userID);
+            throw new BorrowTimeExpireException(bookDao.queryBookNameByID(bookID));
+        } else {
+            // 书未逾期，将借书时间延后10天，达到续借的目的
+            borrowDao.updateBorrowRecord(bookID, new Date(borrowDate.getTime() + RENEW_TIME));
+        }
+    }
+
 }

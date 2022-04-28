@@ -40,6 +40,9 @@
         update user set password = #{password} where user_id = #{id}
     </update>
 
+    <update id="updateUserEnable">
+        update user set enable = #{enable} where user_id = #{id}
+    </update>
 
 
 </mapper>

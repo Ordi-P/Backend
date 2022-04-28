@@ -12,13 +12,13 @@ import java.sql.Date;
 @AllArgsConstructor
 public class Borrow implements Serializable {
 
-    private String bookID;
+    private long bookID;
 
     private String userID;
 
     private Date borrowDate;
 
-    public Borrow(String bookID, String userID) {
+    public Borrow(long bookID, String userID) {
         this.bookID = bookID;
         this.userID = userID;
         borrowDate = new Date(new java.util.Date().getTime());

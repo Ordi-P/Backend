@@ -21,7 +21,7 @@ public class BorrowServiceImpl implements BorrowService {
     private static final String ISBNCodeRegex = "^\\d*-\\d*-\\d*-\\d*-\\d$";
     private static final String ISBNNumberRegex = "^\\d{13}$";
     /** 允许借书的时长：30天 */
-    private static final long BORROW_DURATION = 30 * 24 * 60 * 60 * 1000;
+    private static final long BORROW_DURATION = 10 * 24 * 60 * 60 * 1000;
     /** 续借时间：10天 */
     private static final long RENEW_TIME = 10 * 24 * 60 * 60 * 1000;
     /** 用户可以同时借的书本数量 */

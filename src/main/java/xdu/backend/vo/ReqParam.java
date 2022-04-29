@@ -17,6 +17,14 @@ public class ReqParam {
         this.book_id = book_id;
     }
 
+    public void setBook_id(String book_id) {
+        this.book_id = book_id;
+    }
+
+    public void setUser_id(String user_id) {
+        this.user_id = user_id;
+    }
+
     public void setUserID(String user_id) {
         this.user_id = user_id;
     }

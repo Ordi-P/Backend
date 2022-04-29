@@ -51,4 +51,10 @@
         WHERE br.user_id = #{userID}
     </select>
 
+    <select id="queryBorrowDateByBookID" parameterType="long" resultType="java.sql.Date">
+        select borrow_date
+        from borrow_record
+        where book_id = #{bookID}
+    </select>
+
 </mapper>

@@ -94,5 +94,11 @@
         where book_id = #{book_id}
     </delete>
 
+    <select id="queryBookNameByID" resultType="String" parameterType="long">
+        select book_name
+        from book
+        where book_id = #{bookID}
+    </select>
+
 </mapper>
 

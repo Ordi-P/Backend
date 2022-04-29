@@ -1,6 +1,5 @@
 package xdu.backend.controller;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -75,8 +74,8 @@ public class BorrowController {
 
     @RequestMapping(value = "/myborrow", method = RequestMethod.GET)
     @ResponseBody
-    public JSONObject myBorrow(@RequestBody String user_id) {
-        String userID = user_id.trim();
+    public JSONObject myBorrow(@RequestParam(value = "user_id", required = true) String userID) {
+        userID = userID.trim();
         // 是否为有效请求
         String result = "success";
         // 如果result为“failed”，则错误信息为errorMsg

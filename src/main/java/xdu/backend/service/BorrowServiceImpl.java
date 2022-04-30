@@ -15,19 +15,22 @@ import java.sql.Timestamp;
 import java.util.*;
 import java.sql.Date;
 
+/**
+ * @author xduTD
+ */
 @Service
 public class BorrowServiceImpl implements BorrowService {
     /** 匹配ISBN的正则表达式*/
     private static final String ISBNCodeRegex = "^\\d*-\\d*-\\d*-\\d*-\\d$";
     private static final String ISBNNumberRegex = "^\\d{13}$";
     /** 允许借书的时长：30天 */
-    private static final long BORROW_DURATION = 10 * 24 * 60 * 60 * 1000;
+    private static final long BORROW_DURATION = 10L * 24 * 60 * 60 * 1000;
     /** 续借时间：10天 */
-    private static final long RENEW_TIME = 10 * 24 * 60 * 60 * 1000;
+    private static final long RENEW_TIME = 10L * 24 * 60 * 60 * 1000;
     /** 用户可以同时借的书本数量 */
     public static final int PERMITTED_BORROW_NUMBER = 5;
     /** 用户预订书籍的过期时间:4h, Timestamp的单位：s */
-    public static final int MAX_RESERVE_TIME = 4 * 60 * 60 * 1000;
+    public static final long MAX_RESERVE_TIME = 4L * 60 * 60 * 1000;
 
     @Autowired
     BookDao bookDao;
@@ -156,11 +159,11 @@ public class BorrowServiceImpl implements BorrowService {
         } else {
             // 未被借出，如果书已被预订，判断上一次预订是否过期
             Timestamp reservedTime = bookDao.queryReservedTime(bookID);
-            Timestamp expiredTime = new Timestamp(new java.util.Date().getTime() - MAX_RESERVE_TIME);
+            Timestamp expiredTime = new Timestamp(System.currentTimeMillis() - MAX_RESERVE_TIME);
 
             if (reservedTime == null || reservedTime.before(expiredTime)) {
                 // 过期了，可以预订
-                bookDao.updateBookReservation(bookID, userID, new Timestamp(new java.util.Date().getTime()));
+                bookDao.updateBookReservation(bookID, userID, new Timestamp(System.currentTimeMillis()));
             } else {
                 // 没过期，抛出异常
                 throw new ReserveConflictException("The book has been reserved.");
@@ -219,20 +222,20 @@ public class BorrowServiceImpl implements BorrowService {
         } else {
             // 如果书已被预订，首先判断预订是否过期
             Timestamp reservedTime = bookDao.queryReservedTime(bookID);
-            Timestamp expiredTime = new Timestamp(new java.util.Date().getTime() - MAX_RESERVE_TIME);
+            Timestamp expiredTime = new Timestamp(System.currentTimeMillis() - MAX_RESERVE_TIME);
 
             if (reservedTime == null || reservedTime.before(expiredTime)) {
                 // 预订已经过期，可以直接借书，借书记录插入当前时间
                 bookDao.updateBookAvailability(bookID, false);
-                borrowDao.insertBorrowRecord(bookID, userID, new Date(new java.util.Date().getTime()));
+                borrowDao.insertBorrowRecord(bookID, userID, new Date(System.currentTimeMillis()));
             } else {
                 // 没过期，再判断预订用户id是不是当前借书用户id
                 if (bookDao.queryReserveUserID(bookID).equals(userID)) {
                     // 预订用户id和借书用户id相同，可以借书
                     bookDao.updateBookAvailability(bookID, false);
-                    borrowDao.insertBorrowRecord(bookID, userID, new Date(new java.util.Date().getTime()));
+                    borrowDao.insertBorrowRecord(bookID, userID, new Date(System.currentTimeMillis()));
                     String isbnNumber = bookDao.queryISBNNumberByID(bookID);
-                    bookDao.undoBookReservation(userID, isbnNumber, new Timestamp(new java.util.Date().getTime() - MAX_RESERVE_TIME - 1));
+                    bookDao.undoBookReservation(userID, isbnNumber, new Timestamp(System.currentTimeMillis() - MAX_RESERVE_TIME - 1));
                 } else {
                     throw new LendOutConflictException("The book has been reserved.");
                 }
@@ -277,7 +280,7 @@ public class BorrowServiceImpl implements BorrowService {
 
         // 都正常，再判断借书时间是否逾期
         Date borrowDate = borrowDao.queryBorrowDateByBookID(bookID);
-        if (borrowDate.before(new Date(new java.util.Date().getTime() - BORROW_DURATION))) {
+        if (borrowDate.before(new Date(System.currentTimeMillis() - BORROW_DURATION))) {
             // 如果书已逾期，不允许续借，并且设置用户enable为false
             userDao.updateUserEnable(false, userID);
             throw new BorrowTimeExpireException(bookDao.queryBookNameByID(bookID));

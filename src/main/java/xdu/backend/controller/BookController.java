@@ -86,9 +86,9 @@ public class BookController {
                 } else {
                     json.put("result", "failed");
                 }
-            }
-            else
+            } else {
                 json.put("result", "failed");
+            }
         } catch (Exception e){
             e.printStackTrace();
             json.put("result", "failed");

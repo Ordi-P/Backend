@@ -18,14 +18,13 @@ public class AliPayController {
     }
 
     @RequestMapping({"/pay"})
-    public void payFine(HttpServletRequest request, HttpServletResponse response, String bookId) throws IOException {
-        this.alipayService.aliPay(request, response, bookId);
+    public void payFine(HttpServletRequest request, HttpServletResponse response, String userId) throws IOException {
+        this.alipayService.aliPay(request, response, userId);
     }
 
     @RequestMapping("/preReturnBook")
-    public long preReturnBook(String bookId){
-        long abookId = Long.parseLong(bookId);
-        long res = alipayService.returnFine(abookId);
+    public long preReturnBook(String userId){
+        long res = alipayService.returnFine(userId);
         return res;
     }
 

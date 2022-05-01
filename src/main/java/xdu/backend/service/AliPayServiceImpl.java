@@ -37,11 +37,11 @@ public class AliPayServiceImpl implements AliPayService {
     @Autowired
     BookDao bookDao;
 
-    public void aliPay(HttpServletRequest request, HttpServletResponse response, String bookId) throws IOException {
+    public void aliPay(HttpServletRequest request, HttpServletResponse response, String userId) throws IOException {
         DefaultAlipayClient client = new DefaultAlipayClient(AlipayConfig.gatewayUrl, AlipayConfig.APP_ID, AlipayConfig.APP_PRIVATE_KEY, "json", AlipayConfig.CHARSET, AlipayConfig.ALIPAY_PUBLIC_KEY, AlipayConfig.sign_type);
         AlipayTradePagePayRequest alipayTradePagePayRequest = new AlipayTradePagePayRequest();
         alipayTradePagePayRequest.setReturnUrl(AlipayConfig.return_url);
-        long moneys = returnFine(Long.parseLong(bookId));
+        long moneys = returnFine(userId);
         String money = ((Long) moneys).toString();
         String subject = "Penalty amount";
         String body = "Penalty amount";
@@ -72,16 +72,21 @@ public class AliPayServiceImpl implements AliPayService {
     }
 
     @Override
-    public long returnFine(long bookId) {
-        Date date = borrowDao.queryBorrowDateByBookID(bookId);
-        long endTime = date.getTime() + 10*24*60*60*1000;
-        long nowTime = new java.util.Date().getTime();
-        long bias = nowTime - endTime;
-        long fine = 0;
-        if(bias > 0){
-            fine = bias/24/60/60/1000 + 1;
+    public long returnFine(String userId) {
+        List<UserBorrowInfo> userBorrowInfos = borrowDao.queryUserBorrowInfoByID(userId);
+        Iterator<UserBorrowInfo> iterator = userBorrowInfos.iterator();
+        int res = 0;
+        while(iterator.hasNext()){
+            UserBorrowInfo next = iterator.next();
+            Date date = next.getBorrowDate();
+            long endTime = date.getTime() + 10*24*60*60*1000;
+            long nowTime = new java.util.Date().getTime();
+            long bias = nowTime - endTime;
+            if(bias > 0){
+                res += bias/24/60/60/1000 + 1;
+            }
         }
-        return fine;
+        return res;
     }
 
     @Override

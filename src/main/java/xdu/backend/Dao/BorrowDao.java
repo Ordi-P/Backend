@@ -24,4 +24,7 @@ public interface BorrowDao {
     void updateBorrowRecord(@Param("bookID") long bookID, @Param("date") Date date);
 
     List<UserBorrowInfo> queryUserBorrowInfoByID(String userID);
+
+    int deleteBorrowRecordByBookId(long bookID);
+
 }

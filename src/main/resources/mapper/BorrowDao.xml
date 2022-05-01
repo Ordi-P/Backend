@@ -57,4 +57,8 @@
         where book_id = #{bookID}
     </select>
 
+    <delete id="deleteBorrowRecordByBookId" parameterType="long">
+        delete from borrow_record where book_id = #{bookID}
+    </delete>
+
 </mapper>

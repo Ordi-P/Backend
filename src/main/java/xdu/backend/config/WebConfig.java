@@ -19,23 +19,23 @@ public class WebConfig implements WebMvcConfigurer {
     @Autowired
     AdminLoginInterceptor adminLoginInterceptor;
 
-    @Override
-    public void addInterceptors(InterceptorRegistry registry) {
-        List<String> irs = new ArrayList<>();
-        irs.add("/login");
-        irs.add("/register");
-        irs.add("/admin/**");
-        irs.add("/deletebook");
-        irs.add("/addbook");
-        irs.add("/lendout");
-        InterceptorRegistration interceptor = registry.addInterceptor(adminLoginInterceptor);
-        interceptor.addPathPatterns("/admin/**");
-        interceptor.excludePathPatterns("/admin/login");
-
-        InterceptorRegistration ir = registry.addInterceptor(loginInterceptor);
-        ir.addPathPatterns("/**");
-        ir.excludePathPatterns(irs);
-    }
+//    @Override
+//    public void addInterceptors(InterceptorRegistry registry) {
+//        List<String> irs = new ArrayList<>();
+//        irs.add("/login");
+//        irs.add("/register");
+//        irs.add("/admin/**");
+//        irs.add("/deletebook");
+//        irs.add("/addbook");
+//        irs.add("/lendout");
+//        InterceptorRegistration interceptor = registry.addInterceptor(adminLoginInterceptor);
+//        interceptor.addPathPatterns("/admin/**");
+//        interceptor.excludePathPatterns("/admin/login");
+//
+//        InterceptorRegistration ir = registry.addInterceptor(loginInterceptor);
+//        ir.addPathPatterns("/**");
+//        ir.excludePathPatterns(irs);
+//    }
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {

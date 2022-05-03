@@ -7,9 +7,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public interface AliPayService {
-    void aliPay(HttpServletRequest request, HttpServletResponse response, String userId) throws IOException;
+    void aliPay(HttpServletRequest request, HttpServletResponse response, String bookId) throws IOException;
 
     long returnFine(String userId);
 
     boolean returnBook(String bookId);
+
+    void updateReturnDate(String bookId);
 }

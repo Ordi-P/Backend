@@ -7,7 +7,7 @@ public class AlipayConfig {
     public static String sign_type = "RSA2";
     public static String CHARSET = "utf-8";
     public static String gatewayUrl = "https://openapi.alipaydev.com/gateway.do";
-    public static String notify_url = "http://pcfapi.natappfree.cc/ih/diagnose/pay/alipay/callback";
-    public static String return_url = "http://localhost:8080/login";
+    public static String notify_url = "http://localhost:8080/updateBorrowDate?bookId=";
+    public static String return_url = "http://124.70.53.71:8080/updateBorrowDate?bookId=";
     public static String log_path = "C:\\";
 }

@@ -18,8 +18,8 @@ public class AliPayController {
     }
 
     @RequestMapping({"/pay"})
-    public void payFine(HttpServletRequest request, HttpServletResponse response, String userId) throws IOException {
-        this.alipayService.aliPay(request, response, userId);
+    public void payFine(HttpServletRequest request, HttpServletResponse response, String bookId) throws IOException {
+        this.alipayService.aliPay(request, response, bookId);
     }
 
     @RequestMapping("/preReturnBook")
@@ -33,5 +33,11 @@ public class AliPayController {
         boolean res = alipayService.returnBook(bookId);
         if(res) return "success";
         return "failed";
+    }
+
+    @RequestMapping("/updateBorrowDate")
+    public void updateBorrowDate(String bookId, HttpServletResponse response) throws IOException {
+        alipayService.updateReturnDate(bookId);
+        response.sendRedirect("http://169.254.70.132:3000/userhome");
     }
 }

@@ -6,9 +6,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import xdu.backend.Dao.BookDao;
 import xdu.backend.Dao.BookMetaDao;
+import xdu.backend.Dao.BorrowDao;
 import xdu.backend.pojo.Book;
 import xdu.backend.pojo.BookMeta;
 
+import java.sql.Date;
 import java.util.List;
 
 @SpringBootTest
@@ -18,6 +20,8 @@ public class BorrowServiceImplTest {
     BookDao bookDao;
     @Autowired
     BookMetaDao bookMetaDao;
+    @Autowired
+    BorrowDao borrowDao;
 
     @Test
     public void testRegex() {
@@ -46,6 +50,17 @@ public class BorrowServiceImplTest {
         List<BookMeta> bookMeta = bookMetaDao.queryBookMetaByISBNCode(code);
 
         Assertions.assertNotNull(bookMeta.get(0));
+
+    }
+
+    @Test
+    public void testDate() {
+        Date date = borrowDao.queryBorrowDateByBookID(191);
+        date.setTime(date.getTime() + 1L);
+        System.out.println(date.getTime());
+        System.out.println(System.currentTimeMillis());
+        Assertions.assertTrue(date.before(new Date(new java.util.Date().getTime())));
+        // Assertions.assertEquals(date.getTime(), System.currentTimeMillis() - 1000L);
 
     }
 }

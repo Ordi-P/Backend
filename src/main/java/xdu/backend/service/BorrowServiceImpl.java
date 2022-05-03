@@ -27,6 +27,8 @@ public class BorrowServiceImpl implements BorrowService {
     private static final long BORROW_DURATION = 10L * 24 * 60 * 60 * 1000;
     /** 续借时间：10天 */
     private static final long RENEW_TIME = 10L * 24 * 60 * 60 * 1000;
+    /** 今天23:59:59 */
+    private static final long END_TIME_OF_THE_DATE = 24L * 60 * 60 * 1000 - 1;
     /** 用户可以同时借的书本数量 */
     public static final int PERMITTED_BORROW_NUMBER = 5;
     /** 用户预订书籍的过期时间:4h, Timestamp的单位：s */
@@ -222,7 +224,8 @@ public class BorrowServiceImpl implements BorrowService {
         } else {
             // 如果书已被预订，首先判断预订是否过期
             Timestamp reservedTime = bookDao.queryReservedTime(bookID);
-            Timestamp expiredTime = new Timestamp(System.currentTimeMillis() - MAX_RESERVE_TIME);
+            Date today = new java.sql.Date(System.currentTimeMillis());
+            Timestamp expiredTime = new Timestamp(today.getTime() - MAX_RESERVE_TIME);
 
             if (reservedTime == null || reservedTime.before(expiredTime)) {
                 // 预订已经过期，可以直接借书，借书记录插入当前时间
@@ -280,6 +283,7 @@ public class BorrowServiceImpl implements BorrowService {
 
         // 都正常，再判断借书时间是否逾期
         Date borrowDate = borrowDao.queryBorrowDateByBookID(bookID);
+        borrowDate.setTime(borrowDate.getTime() + END_TIME_OF_THE_DATE);
         if (borrowDate.before(new Date(System.currentTimeMillis() - BORROW_DURATION))) {
             // 如果书已逾期，不允许续借，并且设置用户enable为false
             userDao.updateUserEnable(false, userID);

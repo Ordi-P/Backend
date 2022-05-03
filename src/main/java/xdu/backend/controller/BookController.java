@@ -32,12 +32,14 @@ public class BookController {
         JSONObject json = new JSONObject();
         ArrayList<Long> book_id_list = new ArrayList<>();
 
-        if (isbn_code == null) { // 如果isbn_code为空，就尝试着自己生成
+        // 如果isbn_code为空，就尝试着自己生成
+        if (isbn_code == null) {
             isbn_code = generateISBNCode(isbn_number);
         }
 
         try{
-            for (int i = 0; i < num; i++) { // 添加num本书
+            for (int i = 0; i < num; i++) {
+                // 添加num本书
 
                 Date date = new Date();
                 long tem = date.getTime() - 4 * 60 * 60 * 1000 - 1;
@@ -56,7 +58,7 @@ public class BookController {
                 bookMetaDao.insertBookMeta(bookMeta);
             }
             bookMetaDao.updateBookMeta(isbn_code, num);
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             json.put("result", "failed");
             return json;

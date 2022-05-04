@@ -38,6 +38,6 @@ public class AliPayController {
     @RequestMapping("/updateBorrowDate")
     public void updateBorrowDate(String bookId, HttpServletResponse response) throws IOException {
         alipayService.updateReturnDate(bookId);
-        response.sendRedirect("http://169.254.70.132:3000/userhome");
+        response.sendRedirect("http://192.168.27.1:3000/userhome");
     }
 }

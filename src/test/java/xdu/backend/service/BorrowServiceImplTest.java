@@ -56,10 +56,10 @@ public class BorrowServiceImplTest {
     @Test
     public void testDate() {
         Date date = borrowDao.queryBorrowDateByBookID(191);
-        date.setTime(date.getTime() + 1L);
+        date.setTime(date.getTime() + 24L * 60 * 60 * 1000 - 1);
         System.out.println(date.getTime());
         System.out.println(System.currentTimeMillis());
-        Assertions.assertTrue(date.before(new Date(new java.util.Date().getTime())));
+        Assertions.assertTrue(date.before(new Date(System.currentTimeMillis())));
         // Assertions.assertEquals(date.getTime(), System.currentTimeMillis() - 1000L);
 
     }

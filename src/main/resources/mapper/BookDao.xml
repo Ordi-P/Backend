@@ -61,8 +61,8 @@
     </update>
 
     <select id="queryReserveUserID" parameterType="long" resultType="String">
-        select user_id 
-        from book 
+        select reserve_user
+        from book
         where book_id = #{bookID}
     </select>
 

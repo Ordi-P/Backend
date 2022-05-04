@@ -76,6 +76,11 @@ public class BookController {
 
         try{
             Book book = bookDao.queryBookByID(book_id);
+            // author:xduTD,这本书目前不在图书馆中
+            if (!bookDao.queryBookAvailability(book_id)) {
+                json.put("result", "failed");
+                return json;
+            }
             if (bookDao.deleteBook(book_id) > 0) {
                 List<BookMeta> list = bookMetaDao.queryBookMetaByISBNCode(book.getIsbnCode());
                 if (list.size() != 0){

@@ -120,7 +120,7 @@ public class UserController {
             password += string.charAt(i);
         }
 
-        boolean flag = userService.updataPasswordById(id,password);
+        boolean flag = userService.updatePasswordById(id,password);
         if (flag) return "success";
         return "failed";
     }

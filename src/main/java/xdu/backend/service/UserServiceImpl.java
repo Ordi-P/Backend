@@ -79,7 +79,7 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public boolean updataPasswordById(String id, String password) {
+    public boolean updatePasswordById(String id, String password) {
         User userDB = userDao.getUserById(id);
         if(userDB == null) return false;
         int res = userDao.updatePasswordById(id,password);

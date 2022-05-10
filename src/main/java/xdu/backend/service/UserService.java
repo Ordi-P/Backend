@@ -16,5 +16,5 @@ public interface UserService {
 
     boolean adminLogin(Admin admin, HttpSession session, HttpServletRequest request, HttpServletResponse response);
 
-    boolean updataPasswordById(String id, String password);
+    boolean updatePasswordById(String id, String password);
 }

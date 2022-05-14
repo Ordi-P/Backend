@@ -20,7 +20,7 @@ public interface BookMetaDao {
 
     List<BookMeta> queryBookMetaByISBN(String isbnNumber);
 
-    void updateBookMeta(String isbn_code, int deltaNum);
+    void updateBookMeta(String isbn_code, Integer deltaNum);
 
     void insertBookMeta(BookMeta bookMeta);
 

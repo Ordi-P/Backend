@@ -32,7 +32,7 @@
         select * from admin where admin_id = #{id}
     </select>
 
-    <select id="getUserEnable" parameterType="String" resultType="boolean">
+    <select id="getUserEnable" parameterType="String" resultType="java.lang.Boolean">
         select enable from user where user_id = #{id}
     </select>
 

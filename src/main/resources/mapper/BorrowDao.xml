@@ -7,7 +7,7 @@
         values (#{bookID}, #{userID}, #{borrowDate})
     </insert>
 
-    <select id="getUserBorrowNumber" parameterType="String" resultType="int">
+    <select id="getUserBorrowNumber" parameterType="String" resultType="java.lang.Integer">
         select count(book_id)
         from borrow_record
         where user_id = #{userID}
@@ -23,7 +23,7 @@
         )
     </select>
 
-    <select id="queryBorrowerByBookID" parameterType="long" resultType="String">
+    <select id="queryBorrowerByBookID" parameterType="java.lang.Long" resultType="String">
         select user_id
         from borrow_record
         where book_id = #{bookID}
@@ -51,13 +51,13 @@
         WHERE br.user_id = #{userID}
     </select>
 
-    <select id="queryBorrowDateByBookID" parameterType="long" resultType="java.sql.Date">
+    <select id="queryBorrowDateByBookID" parameterType="java.lang.Long" resultType="java.sql.Date">
         select borrow_date
         from borrow_record
         where book_id = #{bookID}
     </select>
 
-    <delete id="deleteBorrowRecordByBookId" parameterType="long">
+    <delete id="deleteBorrowRecordByBookId" parameterType="java.lang.Long">
         delete from borrow_record where book_id = #{bookID}
     </delete>
 

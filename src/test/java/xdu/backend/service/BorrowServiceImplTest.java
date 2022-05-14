@@ -37,13 +37,13 @@ public class BorrowServiceImplTest {
 
     @Test
     public void testQueryBookISBNCode() {
-        Book book = bookDao.queryBookByID(12);
+        Book book = bookDao.queryBookByID(12L);
         Assertions.assertEquals("9-787-111-58165-9", book.getIsbnCode());
     }
 
     @Test
     public void testQueryBookMetaByISBNCode() {
-        Book book = bookDao.queryBookByID(12);
+        Book book = bookDao.queryBookByID(12L);
 
         String code = book.getIsbnCode();
 
@@ -55,7 +55,7 @@ public class BorrowServiceImplTest {
 
     @Test
     public void testDate() {
-        Date date = borrowDao.queryBorrowDateByBookID(191);
+        Date date = borrowDao.queryBorrowDateByBookID(191L);
         date.setTime(date.getTime() + 24L * 60 * 60 * 1000 - 1);
         System.out.println(date.getTime());
         System.out.println(System.currentTimeMillis());

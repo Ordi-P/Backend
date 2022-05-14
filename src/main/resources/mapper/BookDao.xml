@@ -6,7 +6,7 @@
         select * from book limit 100
     </select>
 
-    <select id="queryBookByID" parameterType="long" resultType="xdu.backend.pojo.Book">
+    <select id="queryBookByID" parameterType="java.lang.Long" resultType="xdu.backend.pojo.Book">
         select *
         from book
         where book_id = #{bookID}
@@ -18,7 +18,7 @@
         where book_id = #{bookID}
     </update>
 
-    <select id="queryBookAvailability" parameterType="long" resultType="boolean">
+    <select id="queryBookAvailability" parameterType="java.lang.Long" resultType="java.lang.Boolean">
         select available
         from book
         where book_id = #{bookID}
@@ -48,7 +48,7 @@
         where isbn_number like concat(concat('%', #{bookInfo}), '%')
     </select>
 
-    <select id="queryReservedTime" parameterType="long" resultType="java.sql.Timestamp">
+    <select id="queryReservedTime" parameterType="java.lang.Long" resultType="java.sql.Timestamp">
         select reserve_time 
         from book 
         where book_id = #{bookID}
@@ -60,7 +60,7 @@
         where book_id = #{bookID}
     </update>
 
-    <select id="queryReserveUserID" parameterType="long" resultType="String">
+    <select id="queryReserveUserID" parameterType="java.lang.Long" resultType="String">
         select reserve_user
         from book
         where book_id = #{bookID}
@@ -72,7 +72,7 @@
         where isbn_number = #{isbnNumber}
     </select>
 
-    <select id="queryISBNNumberByID" parameterType="long" resultType="String">
+    <select id="queryISBNNumberByID" parameterType="java.lang.Long" resultType="String">
         select isbn_number
         from book
         where book_id = #{bookID}
@@ -94,7 +94,7 @@
         where book_id = #{book_id}
     </delete>
 
-    <select id="queryBookNameByID" resultType="String" parameterType="long">
+    <select id="queryBookNameByID" resultType="String" parameterType="java.lang.Long">
         select book_name
         from book
         where book_id = #{bookID}

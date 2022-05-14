@@ -13,7 +13,7 @@ public class UserBorrowInfo {
 
     String userID;
 
-    long bookID;
+    Long bookID;
 
     String bookName;
 

@@ -20,7 +20,7 @@ public class BookMeta {
 
     private String isbnNumber;
 
-    private int amount;
+    private Integer amount;
 
     @Override
     public String toString() {

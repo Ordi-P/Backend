@@ -10,7 +10,7 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 public class Book implements Serializable {
 
-    private long bookID;
+    private Long bookID;
 
     private String bookName;
 
@@ -22,7 +22,7 @@ public class Book implements Serializable {
 
     private String isbnNumber;
 
-    private boolean available;
+    private Boolean available;
 
     private Timestamp reserveTime;
 

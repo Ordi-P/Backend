@@ -9,6 +9,7 @@ import xdu.backend.Dao.UserDao;
 import xdu.backend.exception.*;
 import xdu.backend.pojo.Book;
 import xdu.backend.pojo.BookMeta;
+import xdu.backend.pojo.Borrow;
 import xdu.backend.vo.UserBorrowInfo;
 
 import java.sql.Timestamp;
@@ -57,24 +58,12 @@ public class BorrowServiceImpl implements BorrowService {
         }
 
         // 添加书本元信息，使用HashMap去重，key为isbnCode，value为bookMeta
-        HashMap<String, BookMeta> distinctMap = new HashMap<>();
-        /* version1:
-        // 添加书本，使用HashMap去重，key为bookID，value为Book
-        HashMap<String, Book> distinctMap = new HashMap<>();
-        */
+        HashMap<String, BookMeta> distinctMap = new HashMap<>(16);
 
         if (bookInfo.matches(ISBNNumberRegex)) {
             // 如果输入格式是ISBN码，返回只有一本书的列表，如果未通过这个ISBN
             // 查询到书籍就返回空列表
             return bookMetaDao.queryBookMetaByISBN(bookInfo);
-            /* version1的实现：返回List<Book>, 再去重
-            List<Book> bookList = bookDao.queryBookByISBNCode(bookInfo);
-            for (Book book : bookList) {
-                if (book != null) {
-                    distinctMap.put(book.getBookID().toString(), book);
-                }
-            }
-             */
         } else {
             // 根据书名查询
             List<BookMeta> bookMetaList = bookMetaDao.queryBookMetaByName(bookInfo);
@@ -83,14 +72,6 @@ public class BorrowServiceImpl implements BorrowService {
                     distinctMap.put(bookMeta.getIsbnCode(), bookMeta);
                 }
             }
-            /* version1:
-            List<Book> bookList = bookDao.queryBookByName(bookInfo);
-            for (Book book : bookList) {
-                if (book != null) {
-                    distinctMap.put(book.getBookID().toString(), book);
-                }
-            }
-             */
             // 根据作者查询
             bookMetaList = bookMetaDao.queryBookMetaByAuthor(bookInfo);
             for (BookMeta bookMeta : bookMetaList) {
@@ -98,14 +79,6 @@ public class BorrowServiceImpl implements BorrowService {
                     distinctMap.put(bookMeta.getIsbnCode(), bookMeta);
                 }
             }
-            /*
-            bookList = bookDao.queryBookByAuthor(bookInfo);
-            for (Book book : bookList) {
-                if (book != null) {
-                    distinctMap.put(book.getBookID().toString(), book);
-                }
-            }
-             */
             // 根据ISBN号查询
             bookMetaList = bookMetaDao.queryBookMetaByISBNNumber(bookInfo);
             for (BookMeta bookMeta : bookMetaList) {
@@ -113,14 +86,6 @@ public class BorrowServiceImpl implements BorrowService {
                     distinctMap.put(bookMeta.getIsbnCode(), bookMeta);
                 }
             }
-            /* version1:
-            bookList = bookDao.queryBookByISBNNumber(bookInfo);
-            for (Book book : bookList) {
-                if (book != null) {
-                    distinctMap.put(book.getBookID().toString(), book);
-                }
-            }
-             */
         }
 
         return new ArrayList<>(distinctMap.values());
@@ -214,7 +179,22 @@ public class BorrowServiceImpl implements BorrowService {
             // 用户不可用（罚款未交）
             throw new UserOperationException("Your still have unpaid fines. You cannot borrow any book before you pay for them.");
         } else if (borrowDao.getUserBorrowNumber(userID) >= PERMITTED_BORROW_NUMBER) {
+            // 用户借书已达上限
             throw new UserOperationException("You've borrow " + PERMITTED_BORROW_NUMBER +" books. You cannot borrow any more before you return some of them");
+        } else {
+            // 判断用户每条借书记录是否都未逾期
+            List<UserBorrowInfo> borrowList = borrowDao.queryUserBorrowInfoByID(userID);
+            for (UserBorrowInfo borrowInfo : borrowList) {
+                // 将借书时间延后为当天的最后一刻，当判断借书时间和当前时间的先后关系时可以直接使用before比较
+                Date borrowDate = borrowInfo.getBorrowDate();
+                borrowDate.setTime(borrowDate.getTime() + END_TIME_OF_THE_DATE);
+
+                if (borrowDate.before(new Date(System.currentTimeMillis() - MAX_RESERVE_TIME))) {
+                    // 逾期,设置enable为false,并抛出异常
+                    userDao.updateUserEnable(false, userID);
+                    throw new UserOperationException("Your still have unpaid fines. You cannot borrow any book before you pay for them.");
+                }
+            }
         }
 
         // 再判断书籍状态

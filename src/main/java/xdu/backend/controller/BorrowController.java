@@ -13,6 +13,9 @@ import xdu.backend.vo.UserBorrowInfo;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author 邓乐丰
+ */
 @RestController
 @CrossOrigin
 public class BorrowController {
@@ -185,6 +188,7 @@ public class BorrowController {
 
     /**
      * 判断userID是否符合id格式
+     *
      * @param userID
      */
     private boolean isValidUserID(String userID) {
@@ -193,6 +197,7 @@ public class BorrowController {
 
     /**
      * 判断bookID是否符合id格式
+     *
      * @param bookID
      */
     private boolean isValidBookID(String bookID) {

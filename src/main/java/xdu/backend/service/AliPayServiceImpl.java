@@ -37,6 +37,7 @@ public class AliPayServiceImpl implements AliPayService {
     @Autowired
     BookDao bookDao;
 
+    @Override
     public void aliPay(HttpServletRequest request, HttpServletResponse response, String bookId) throws IOException {
         DefaultAlipayClient client = new DefaultAlipayClient(AlipayConfig.gatewayUrl, AlipayConfig.APP_ID, AlipayConfig.APP_PRIVATE_KEY, "json", AlipayConfig.CHARSET, AlipayConfig.ALIPAY_PUBLIC_KEY, AlipayConfig.sign_type);
         AlipayTradePagePayRequest alipayTradePagePayRequest = new AlipayTradePagePayRequest();

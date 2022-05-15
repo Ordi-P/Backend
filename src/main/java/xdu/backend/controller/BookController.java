@@ -76,11 +76,12 @@ public class BookController {
 
         try{
             Book book = bookDao.queryBookByID(book_id);
-            // author:xduTD,这本书目前不在图书馆中
+            // author:xduTD，这本书目前不在图书馆中，不能删除书籍
             if (!bookDao.queryBookAvailability(book_id)) {
                 json.put("result", "failed");
                 return json;
             }
+
             if (bookDao.deleteBook(book_id) > 0) {
                 List<BookMeta> list = bookMetaDao.queryBookMetaByISBNCode(book.getIsbnCode());
                 if (list.size() != 0){
@@ -111,7 +112,7 @@ public class BookController {
      * 的isbn_code格式有两种，XXX-X-XXX-XXXXX-X
      * 和 XXX-X-XX-XXXXXX-X
      *
-     * @param isbn_number
+     * @param isbn_number 书本的不含'-'的ISBN串
      * @return 生成的isbn
      */
     private String generateISBNCode(String isbn_number) {
@@ -172,6 +173,5 @@ public class BookController {
 
         return sb.toString();
     }
-
 
 }

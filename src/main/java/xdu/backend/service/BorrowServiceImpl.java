@@ -44,12 +44,7 @@ public class BorrowServiceImpl implements BorrowService {
     @Autowired
     BorrowDao borrowDao;
 
-    /**
-     * 查找书籍
-     *
-     * @param bookInfo 书籍信息
-     * @return bookList
-     */
+
     @Override
     public List<BookMeta> searchBook(String bookInfo) {
         // 如果输入的是空值，返回全部书籍
@@ -91,12 +86,6 @@ public class BorrowServiceImpl implements BorrowService {
         return new ArrayList<>(distinctMap.values());
     }
 
-    /**
-     * 预订书籍
-     *
-     * @param bookID
-     * @param userID
-     */
     @Override
     public void reserveBook(long bookID, String userID) throws ReserveConflictException,
                                                                UserOperationException,
@@ -136,15 +125,8 @@ public class BorrowServiceImpl implements BorrowService {
                 throw new ReserveConflictException("The book has been reserved.");
             }
         }
-
     }
 
-    /**
-     * 查询我已借阅的书籍
-     *
-     * @param userID
-     * @return bookList
-     */
     @Override
     public List<UserBorrowInfo> queryMyBorrow(String userID) throws UserNotExistsException {
         // 如果用户不存在，抛出异常信息
@@ -155,12 +137,6 @@ public class BorrowServiceImpl implements BorrowService {
         return borrowDao.queryUserBorrowInfoByID(userID);
     }
 
-    /**
-     * 借书出库
-     *
-     * @param bookID
-     * @param userID
-     */
     @Override
     public void lendOutBook(long bookID, String userID) throws LendOutConflictException,
                                                                UserOperationException,
@@ -227,23 +203,16 @@ public class BorrowServiceImpl implements BorrowService {
 
     }
 
-    /**
-     * 返回某一个isbn下的所有书本
-     * @param isbnNumber
-     * @return
-     */
     @Override
     public List<Book> getBook(String isbnNumber) {
         return bookDao.queryBookByISBN(isbnNumber);
     }
 
-    /**
-     *
-     * @param bookID
-     * @param userID
-     */
     @Override
-    public void renew(long bookID, String userID) throws UserNotExistsException, BookNotExistsException, UserOperationException, BorrowTimeExpireException {
+    public void renew(long bookID, String userID) throws UserNotExistsException,
+                                                         BookNotExistsException,
+                                                         UserOperationException,
+                                                         BorrowTimeExpireException {
         // 首先判断用户和书籍是否存在
         if (userDao.getUserById(userID) == null) {
             throw new UserNotExistsException(userID);

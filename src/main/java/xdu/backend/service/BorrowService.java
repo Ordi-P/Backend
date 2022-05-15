@@ -9,9 +9,11 @@ import java.util.List;
 
 public interface BorrowService {
     /**
-     * 查找书籍
+     * 查找书籍如果输入符合ISBN的格式，则只根据ISBN进
+     * 行查询；如果不符合ISBN的格式，则将会从作者、书
+     * 名、ISBN三个方向匹配，返回匹配的所有结果
      *
-     * @param bookInfo
+     * @param bookInfo 书籍的相关信息。
      * @return 书籍元信息的列表
      */
     List<BookMeta> searchBook(String bookInfo);
@@ -19,8 +21,8 @@ public interface BorrowService {
     /**
      * 预订书籍
      *
-     * @param bookID
-     * @param userID
+     * @param bookID 书籍ID
+     * @param userID 用户ID（学号）
      * @throws ReserveConflictException
      */
     void reserveBook(long bookID, String userID) throws ReserveConflictException,
@@ -29,33 +31,33 @@ public interface BorrowService {
     /**
      * 查询我已借阅的书籍
      *
-     * @param userID
-     * @return
+     * @param userID 用户ID （学号）
+     * @return 书籍本次借阅信息的列表
      */
     List<UserBorrowInfo> queryMyBorrow(String userID) throws UserNotExistsException;
 
     /**
      * 借书出库
      *
-     * @param bookID
-     * @param userID
+     * @param bookID 书籍ID
+     * @param userID 用户ID
      */
     void lendOutBook(long bookID, String userID) throws LendOutConflictException,
             UserOperationException, UserNotExistsException, BookNotExistsException;
 
     /**
-     * 返回某一个isbn下的所有书本
+     * 返回某一个ISBN下的所有书籍副本
      *
-     * @param isbnNumber
-     * @return
+     * @param isbnNumber ISBN数
+     * @return 书籍列表
      */
     List<Book> getBook(String isbnNumber);
 
     /**
      * 续借书籍（10天）
      *
-     * @param bookID
-     * @param userID
+     * @param bookID 书籍ID
+     * @param userID 用户ID
      */
     void renew(long bookID, String userID) throws UserNotExistsException, BookNotExistsException, UserOperationException, BorrowTimeExpireException;
 }

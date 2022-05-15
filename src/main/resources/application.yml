@@ -14,6 +14,32 @@ spring:
   mvc:
     dispatch-options-request: true
 
+  # 邮件模块配置
+  mail:
+    # 配置 SMTP 服务器地址
+    host: smtp.qq.com
+    # SMTP 服务器的端口
+    port: 465
+    # 配置邮箱用户名
+    username: funduncan@qq.com
+    # 配置密钥
+    password: gnnousfyrinobbdb
+    # 字符编码
+    default-encoding: UTF-8
+    # 协议
+    protocol: smtp
+    properties:
+      mail:
+        smtp:
+          # SSL加密工厂
+          socketFactoryClass: javax.net.ssl.SSLSocketFactory
+          ssl:
+            enable: true
+          socketFactory:
+            port: 465
+        # 表示开启 DEBUG 模式，这样，邮件发送过程的日志会在控制台打印出来，方便排查错误
+        debug: true
+
 #mybatis
 mybatis:
   type-aliases-package: xdu.backend.Dao

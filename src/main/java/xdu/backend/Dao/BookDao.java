@@ -7,6 +7,9 @@ import xdu.backend.pojo.Book;
 import java.sql.Timestamp;
 import java.util.List;
 
+/**
+ * @author 邓乐丰
+ */
 @Repository
 public interface BookDao {
 
@@ -43,4 +46,6 @@ public interface BookDao {
     void undoBookReservation(@Param("userID") String userID, @Param("isbnNumber") String isbnNumber, @Param("reserveTime") Timestamp reserveTime);
 
     String queryBookNameByID(Long bookID);
+
+    String queryLocationByID(Long bookID);
 }

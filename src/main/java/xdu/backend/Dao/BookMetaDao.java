@@ -5,6 +5,9 @@ import xdu.backend.pojo.BookMeta;
 
 import java.util.List;
 
+/**
+ * @author 邓乐丰
+ */
 @Repository
 public interface BookMetaDao {
 

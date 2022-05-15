@@ -8,6 +8,9 @@ import xdu.backend.vo.UserBorrowInfo;
 import java.sql.Date;
 import java.util.List;
 
+/**
+ * @author 邓乐丰
+ */
 @Repository
 public interface BorrowDao {
 
@@ -27,4 +30,9 @@ public interface BorrowDao {
 
     int deleteBorrowRecordByBookId(Long bookID);
 
+    String queryUserEmailByTxID(Long transactionID);
+
+    String queryBookNameByTxID(Long transactionID);
+
+    Integer queryUnpaidFineByUserID(String userID);
 }

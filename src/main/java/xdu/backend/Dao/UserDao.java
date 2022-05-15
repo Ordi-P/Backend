@@ -20,7 +20,9 @@ public interface UserDao {
   
     boolean getUserEnable(String id);
 
-    void updateUserEnable(@Param("enable") boolean enable, @Param("id") String id);
+    void updateUserEnable(@Param("enable") Boolean enable, @Param("id") String id);
+
+    String queryEmailAddressByID(String userID);
 }
 
 

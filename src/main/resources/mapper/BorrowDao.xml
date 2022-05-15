@@ -61,4 +61,19 @@
         delete from borrow_record where book_id = #{bookID}
     </delete>
 
+    <select id="queryBookNameByTxID" resultType="String" parameterType="Long">
+        select book_name
+        from book
+        where book_id in (select book_id
+                          from borrow_record
+                          where transaction_id = #{transactionID})
+    </select>
+
+    <select id="queryUserEmailByTxID" resultType="String" parameterType="Long">
+        select email
+        from user
+        where user_id in (select user_id
+                          from borrow_record
+                          where transaction_id = #{transacionID})
+    </select>
 </mapper>

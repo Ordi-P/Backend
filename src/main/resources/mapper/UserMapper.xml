@@ -44,5 +44,10 @@
         update user set enable = #{enable} where user_id = #{id}
     </update>
 
+    <select id="queryEmailAddressByID" parameterType="String" resultType="String">
+        select email
+        from user
+        where user_id = #{userID}
+    </select>
 
 </mapper>

@@ -16,7 +16,6 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.alipay.api.response.AlipayTradeQueryResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import xdu.backend.Dao.BookDao;
@@ -96,6 +95,11 @@ public class AliPayServiceImpl implements AliPayService {
     @Override
     public boolean returnBook(String bookId) {
         Long no = Long.parseLong(bookId);
+        Date date = borrowDao.queryBorrowDateByBookID(no);
+        java.util.Date tempDate = new java.util.Date();
+        if(tempDate.getTime() - (date.getTime() + 10*24*60*60*1000) > 0){
+            return false;
+        }
         String userId = borrowDao.queryBorrowerByBookID(no);
         int res = borrowDao.deleteBorrowRecordByBookId(no);
         bookDao.updateBookAvailability(no,true);

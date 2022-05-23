@@ -1,13 +1,18 @@
 package xdu.backend.pojo;
 
 import lombok.*;
+import lombok.experimental.Accessors;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
 
+/**
+ * @author 邓乐丰
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Accessors(chain = true)
 public class Book implements Serializable {
 
     private Long bookID;
@@ -15,6 +20,9 @@ public class Book implements Serializable {
     private String bookName;
 
     private String bookAuthor;
+
+    /** New column in Release 3, 书籍的分类 */
+    private String category;
 
     private String location;
 
@@ -27,6 +35,12 @@ public class Book implements Serializable {
     private Timestamp reserveTime;
 
     private String reserveUser;
+
+    /** New column in Release 3, 是否已经被遗弃 */
+    private boolean abandoned;
+
+    /** New column in Release 3, 遗弃的原因 */
+    private String reason;
 
     public Timestamp getReserveTime() {
         return reserveTime;

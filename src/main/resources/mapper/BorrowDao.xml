@@ -120,7 +120,7 @@
     </update>
 
     <update id="updateReturnedByBookIdAndUserId">
-        update borrow_record set returnde = 1  where book_id = #{bookId} and user_id = #{userId} and returned = 0
+        update borrow_record set returned = 1  where book_id = #{bookId} and user_id = #{userId} and returned = 0
     </update>
 
 </mapper>

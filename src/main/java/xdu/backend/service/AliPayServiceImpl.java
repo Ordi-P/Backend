@@ -41,7 +41,7 @@ public class AliPayServiceImpl implements AliPayService {
         DefaultAlipayClient client = new DefaultAlipayClient(AlipayConfig.gatewayUrl, AlipayConfig.APP_ID, AlipayConfig.APP_PRIVATE_KEY, "json", AlipayConfig.CHARSET, AlipayConfig.ALIPAY_PUBLIC_KEY, AlipayConfig.sign_type);
         AlipayTradePagePayRequest alipayTradePagePayRequest = new AlipayTradePagePayRequest();
         //alipayTradePagePayRequest.setNotifyUrl(AlipayConfig.notify_url + bookId);
-        alipayTradePagePayRequest.setReturnUrl(AlipayConfig.return_url + bookId);
+        alipayTradePagePayRequest.setReturnUrl(AlipayConfig.return_url + bookId + "&userId=" + userId);
         long startTime = borrowDao.getNoReturnDateByUserIdAndBookId(userId,Long.parseLong(bookId)).getTime();
         long endTime = new java.util.Date().getTime();
         String money = ((Long) ((endTime - startTime)/24/60/60/1000)).toString();
@@ -94,7 +94,7 @@ public class AliPayServiceImpl implements AliPayService {
     @Override
     public boolean returnBook(String bookId, String userId, HttpServletResponse response) {
         Long no = Long.parseLong(bookId);
-        Date date = borrowDao.getNoReturnDateByUserIdAndBookId(bookId,no);
+        Date date = borrowDao.getNoReturnDateByUserIdAndBookId(userId,no);
         java.util.Date tempDate = new java.util.Date();
         if(tempDate.getTime() - date.getTime() > 0){
             return false;
@@ -107,7 +107,7 @@ public class AliPayServiceImpl implements AliPayService {
         while(iterator.hasNext()){
             UserBorrowInfo borrowInfo = iterator.next();
             if (!borrowInfo.getReturned()){
-                Date shouldReturnDate = borrowDao.getNoReturnDateByUserIdAndBookId(userId, no);
+                Date shouldReturnDate = borrowDao.getNoReturnDateByUserIdAndBookId(userId, borrowInfo.getBookID());
                 if(shouldReturnDate.getTime() < new java.util.Date().getTime()){
                     userDao.updateUserEnable(false,userId);
                     return true;
@@ -122,7 +122,7 @@ public class AliPayServiceImpl implements AliPayService {
     public void updateReturnDate(String bookId, String userId) {
         long bId = Long.parseLong(bookId);
         java.util.Date date1 = new java.util.Date();
-        long newDate = date1.getTime();
+        long newDate = date1.getTime() + 10*24*60*60*1000;
         Date date2 = new Date(newDate);
         borrowDao.updateReturnDateByBookIdAndUserId(userId,bId,date2);
         List<UserBorrowInfo> userBorrowInfos = borrowDao.queryUserCurrentBorrowInfoByUserID(userId);

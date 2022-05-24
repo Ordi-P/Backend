@@ -45,6 +45,7 @@ public class BorrowController {
         // 如果result为“failed”，则错误信息为errorMsg
         String errorMsg = null;
 
+        String transactionID = param.getTransactionID().trim();
         String bookID = param.getBookID().trim();
         String userID = param.getUserID().trim();
 
@@ -52,7 +53,7 @@ public class BorrowController {
         if (isValidBookID(bookID) && isValidUserID(userID)) {
             // 参数ok，开启预订书籍事务
             try {
-                borrowService.renew(Long.parseLong(bookID), userID);
+                borrowService.renew(Long.parseLong(transactionID), Long.parseLong(bookID), userID);
                 result = "success";
             } catch (BorrowTimeExpireException |
                     UserNotExistsException |
@@ -75,9 +76,9 @@ public class BorrowController {
     }
 
 
-    @RequestMapping(value = "/myborrow", method = RequestMethod.GET)
+    @RequestMapping(value = "/mycurrentborrow", method = RequestMethod.GET)
     @ResponseBody
-    public JSONObject myBorrow(@RequestParam(value = "user_id", required = true) String userID) {
+    public JSONObject myCurrentBorrow(@RequestParam(value = "user_id", required = true) String userID) {
         userID = userID.trim();
         // 是否为有效请求
         String result = "success";
@@ -88,7 +89,41 @@ public class BorrowController {
         if (isValidUserID(userID)) {
             // 如果用户不存在，queryMyBorrow会抛出异常
             try {
-                borrowList = borrowService.queryMyBorrow(userID);
+                borrowList = borrowService.queryMyCurrentBorrow(userID);
+            } catch (UserNotExistsException e) {
+                borrowList = new ArrayList<>();
+                result = "failed";
+                errorMsg = e.getMessage();
+            }
+        } else {
+            result = "failed";
+            errorMsg = "Parameter Error: Check the length of user ID.";
+        }
+
+        // 把返回结果封装成JSON
+        JSONObject json = new JSONObject();
+        json.put("result", result);
+        json.put("errorMsg", errorMsg);
+        json.put("borrowList", borrowList);
+
+        return json;
+    }
+
+
+    @RequestMapping(value = "/myborrowhistory", method = RequestMethod.GET)
+    @ResponseBody
+    public JSONObject myBorrowHistory(@RequestParam("user_id") String userID) {
+        userID = userID.trim();
+        // 是否为有效请求
+        String result = "success";
+        // 如果result为“failed”，则错误信息为errorMsg
+        String errorMsg = null;
+        List<UserBorrowInfo> borrowList = new ArrayList<>();
+
+        if (isValidUserID(userID)) {
+            // 如果用户不存在，queryMyBorrow会抛出异常
+            try {
+                borrowList = borrowService.queryMyHistoryBorrow(userID);
             } catch (UserNotExistsException e) {
                 borrowList = new ArrayList<>();
                 result = "failed";

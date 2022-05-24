@@ -8,17 +8,17 @@ import xdu.backend.pojo.User;
 @Repository
 public interface UserDao {
 
-    int registerUser(User user);
+    Integer registerUser(User user);
 
     User getUserById(String id);
 
-    int changeNameById(String newName,String id);
+    Integer changeNameById(String newName,String id);
 
     Admin getAdminById(Integer id);
 
-    int updatePasswordById(String id, String password);
+    Integer updatePasswordById(String id, String password);
   
-    boolean getUserEnable(String id);
+    Boolean getUserEnable(String id);
 
     void updateUserEnable(@Param("enable") Boolean enable, @Param("id") String id);
 

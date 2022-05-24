@@ -29,12 +29,22 @@ public interface BorrowService {
             UserOperationException, BookNotExistsException, UserNotExistsException;
 
     /**
-     * 查询我已借阅的书籍
+     * 查询当前我已借阅的书籍（未还）
      *
      * @param userID 用户ID （学号）
      * @return 书籍本次借阅信息的列表
      */
-    List<UserBorrowInfo> queryMyBorrow(String userID) throws UserNotExistsException;
+
+    List<UserBorrowInfo> queryMyCurrentBorrow(String userID) throws UserNotExistsException;
+
+    /**
+     * 查询我的历史借阅记录（已还）
+     *
+     * @param userID 用户ID （学号）
+     * @return 书籍本次借阅信息的列表
+     */
+
+    List<UserBorrowInfo> queryMyHistoryBorrow(String userID) throws UserNotExistsException;
 
     /**
      * 借书出库
@@ -56,8 +66,9 @@ public interface BorrowService {
     /**
      * 续借书籍（10天）
      *
+     * @param transactionID 借书记录事务ID
      * @param bookID 书籍ID
      * @param userID 用户ID
      */
-    void renew(long bookID, String userID) throws UserNotExistsException, BookNotExistsException, UserOperationException, BorrowTimeExpireException;
+    void renew(Long transactionID, Long bookID, String userID) throws UserNotExistsException, BookNotExistsException, UserOperationException, BorrowTimeExpireException;
 }

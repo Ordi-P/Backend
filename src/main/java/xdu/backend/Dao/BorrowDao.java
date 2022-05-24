@@ -14,11 +14,13 @@ import java.util.List;
 @Repository
 public interface BorrowDao {
 
-    void insertBorrowRecord(@Param("bookID") Long bookID, @Param("userID") String userID, @Param("borrowDate") Date borrowDate);
+    void insertBorrowRecord(@Param("bookID") Long bookID, @Param("userID") String userID,
+                            @Param("borrowDate") Date borrowDate, @Param("returnDate") Date returnDate,
+                            @Param("returned") Boolean returned, @Param("fine") Integer fine);
 
-    int getUserBorrowNumber(String userID);
+    Integer getUserCurrentBorrowNumber(String userID);
 
-    List<Book> getUserBorrowList(String userID);
+    List<Book> getUserCurrentBorrowList(String userID);
 
     Date queryBorrowDateByBookID(Long bookID);
 
@@ -28,13 +30,21 @@ public interface BorrowDao {
 
     List<UserBorrowInfo> queryUserCurrentBorrowInfoByUserID(String userID);
 
-    int deleteBorrowRecordByBookId(Long bookID);
+    List<UserBorrowInfo> queryUserHistoryBorrowInfoByUserID(String userID);
+
+    Integer deleteBorrowRecordByBookId(Long bookID);
 
     String queryUserEmailByTxID(Long transactionID);
 
     String queryBookNameByTxID(Long transactionID);
 
     Integer queryUnpaidFineByUserID(String userID);
+
+    Date queryReturnDateByTransactionID(Long transactionID);
+
+    void updateReturnDateByTransactionTD(@Param("transactionID") Long transactionID, @Param("date") Date date);
+
+    String queryBorrowerByTransactionID(Long transactionID);
 
     int updateBorrowRecordFine(Long bookID, String money);
 

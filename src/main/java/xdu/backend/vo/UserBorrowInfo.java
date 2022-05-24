@@ -6,6 +6,10 @@ import lombok.NoArgsConstructor;
 
 import java.sql.Date;
 
+/**
+ * 返回给前端的用户借书信息，需要多表查询
+ * @author 邓乐丰
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

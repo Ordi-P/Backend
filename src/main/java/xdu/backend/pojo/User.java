@@ -11,7 +11,6 @@ public class User implements Serializable {
     private Boolean enable;
 
     private String password;
-
     /** 邮箱初始为学生邮箱，可以后续自己更换 */
     private String email;
 

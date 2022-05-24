@@ -9,6 +9,7 @@ package xdu.backend.exception;
  * @author 邓乐丰
  */
 public class UserOperationException extends Exception {
+
     public UserOperationException(String errMsg) {
         super("UserOperationException: " + errMsg);
     }

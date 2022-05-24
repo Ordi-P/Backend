@@ -9,6 +9,7 @@ import xdu.backend.Dao.BookMetaDao;
 import xdu.backend.Dao.BorrowDao;
 import xdu.backend.pojo.Book;
 import xdu.backend.pojo.BookMeta;
+import xdu.backend.vo.BookInfo;
 
 import java.sql.Date;
 import java.util.List;
@@ -47,9 +48,9 @@ public class BorrowServiceImplTest {
 
         String code = book.getIsbnCode();
 
-        List<BookMeta> bookMeta = bookMetaDao.queryBookMetaByISBNCode(code);
+        List<BookInfo> bookInfos = bookMetaDao.queryBookMetaByISBNCode(code);
 
-        Assertions.assertNotNull(bookMeta.get(0));
+        Assertions.assertNotNull(bookInfos.get(0));
 
     }
 

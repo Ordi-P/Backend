@@ -37,7 +37,7 @@ public class Book implements Serializable {
     private String reserveUser;
 
     /** New column in Release 3, 是否已经被遗弃 */
-    private boolean abandoned;
+    private Boolean abandoned;
 
     /** New column in Release 3, 遗弃的原因 */
     private String reason;
@@ -86,8 +86,16 @@ public class Book implements Serializable {
         return isbnNumber;
     }
 
+    public boolean getAvailable() {
+        return available;
+    }
+
     public boolean isAvailable() {
         return available;
+    }
+
+    public boolean isAbandoned() {
+        return abandoned;
     }
 
     public void setBookID(long bookID) {

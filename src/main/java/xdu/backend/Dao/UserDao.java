@@ -23,6 +23,8 @@ public interface UserDao {
     void updateUserEnable(@Param("enable") Boolean enable, @Param("id") String id);
 
     String queryEmailAddressByID(String userID);
+
+    int updateEmailByUserId(String id, String email);
 }
 
 

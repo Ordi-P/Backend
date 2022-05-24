@@ -11,6 +11,8 @@ import java.sql.Date;
 @AllArgsConstructor
 public class UserBorrowInfo {
 
+    Long transactionID;
+
     String userID;
 
     Long bookID;
@@ -20,5 +22,11 @@ public class UserBorrowInfo {
     String bookAuthor;
 
     Date borrowDate;
+
+    Date returnDate;
+
+    Boolean returned;
+
+    Integer fine;
 
 }

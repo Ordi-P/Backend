@@ -125,4 +125,14 @@ public class UserController {
         return "failed";
     }
 
+    @RequestMapping("/updateEmail")
+    String updateEmail(@RequestBody User user){
+        String email = user.getEmail();
+        if(email == null) return "false";
+        if(userService.updateEmailByUserId(user.getId(),email) > 0){
+            return "success";
+        }
+        return "failed";
+    }
+
 }

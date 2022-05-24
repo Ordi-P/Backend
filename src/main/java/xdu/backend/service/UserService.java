@@ -17,4 +17,6 @@ public interface UserService {
     boolean adminLogin(Admin admin, HttpSession session, HttpServletRequest request, HttpServletResponse response);
 
     boolean updatePasswordById(String id, String password);
+
+    int updateEmailByUserId(String id, String email);
 }

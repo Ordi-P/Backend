@@ -26,7 +26,7 @@ public interface BorrowDao {
 
     void updateBorrowRecord(@Param("bookID") Long bookID, @Param("date") Date date);
 
-    List<UserBorrowInfo> queryUserBorrowInfoByID(String userID);
+    List<UserBorrowInfo> queryUserCurrentBorrowInfoByUserID(String userID);
 
     int deleteBorrowRecordByBookId(Long bookID);
 
@@ -35,4 +35,12 @@ public interface BorrowDao {
     String queryBookNameByTxID(Long transactionID);
 
     Integer queryUnpaidFineByUserID(String userID);
+
+    int updateBorrowRecordFine(Long bookID, String money);
+
+    Date getNoReturnDateByUserIdAndBookId(String userId, long bookId);
+
+    int updateReturnDateByBookIdAndUserId(String userId, long bookId, Date newDate);
+
+    int updateReturnedByBookIdAndUserId(Long bookId, String userId, boolean returned);
 }

@@ -134,7 +134,7 @@ public class BorrowServiceImpl implements BorrowService {
             throw new UserNotExistsException(userID);
         }
 
-        return borrowDao.queryUserBorrowInfoByID(userID);
+        return borrowDao.queryUserCurrentBorrowInfoByUserID(userID);
     }
 
     @Override
@@ -159,7 +159,7 @@ public class BorrowServiceImpl implements BorrowService {
             throw new UserOperationException("You've borrow " + PERMITTED_BORROW_NUMBER +" books. You cannot borrow any more before you return some of them");
         } else {
             // 判断用户每条借书记录是否都未逾期
-            List<UserBorrowInfo> borrowList = borrowDao.queryUserBorrowInfoByID(userID);
+            List<UserBorrowInfo> borrowList = borrowDao.queryUserCurrentBorrowInfoByUserID(userID);
             for (UserBorrowInfo borrowInfo : borrowList) {
                 // 将借书时间延后为当天的最后一刻，当判断借书时间和当前时间的先后关系时可以直接使用before比较
                 Date borrowDate = borrowInfo.getBorrowDate();

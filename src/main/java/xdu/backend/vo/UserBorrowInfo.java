@@ -6,10 +6,16 @@ import lombok.NoArgsConstructor;
 
 import java.sql.Date;
 
+/**
+ * 返回给前端的用户借书信息，需要多表查询
+ * @author 邓乐丰
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserBorrowInfo {
+
+    Long transactionID;
 
     String userID;
 
@@ -20,5 +26,11 @@ public class UserBorrowInfo {
     String bookAuthor;
 
     Date borrowDate;
+
+    Date returnDate;
+
+    Boolean returned;
+
+    Integer fine;
 
 }

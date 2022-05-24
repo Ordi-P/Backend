@@ -17,6 +17,7 @@ import java.util.List;
 @RestController
 @CrossOrigin
 public class BookController {
+
     @Autowired
     BookDao bookDao;
     @Autowired
@@ -42,7 +43,7 @@ public class BookController {
                 // 添加num本书
 
                 Date date = new Date();
-                long tem = date.getTime() - 4 * 60 * 60 * 1000 - 1;
+                long tem = date.getTime() - 4L * 60 * 60 * 1000 - 1;
                 date.setTime(tem);
                 Timestamp reserve_time = new Timestamp(date.getTime());
 
@@ -54,7 +55,7 @@ public class BookController {
             }
             List<BookMeta> bookMetas = bookMetaDao.queryBookMetaByISBNCode(isbn_code);
             if (bookMetas.size() == 0){
-                BookMeta bookMeta = new BookMeta(isbn_code, book_name, book_author, "A-" + isbn_number.substring(10, 12), isbn_number, 0);
+                BookMeta bookMeta = new BookMeta(isbn_code, book_name, book_author, "null", "A-" + isbn_number.substring(10, 12), isbn_number, 0);
                 bookMetaDao.insertBookMeta(bookMeta);
             }
             bookMetaDao.updateBookMeta(isbn_code, num);

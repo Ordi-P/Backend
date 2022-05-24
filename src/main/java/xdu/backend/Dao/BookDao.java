@@ -15,7 +15,7 @@ public interface BookDao {
 
     List<Book> getAllBooks();
 
-    boolean queryBookAvailability(Long bookID);
+    Boolean queryBookAvailability(Long bookID);
 
     void updateBookAvailability(@Param("bookID") Long bookID, @Param("availability") Boolean availability);
 
@@ -39,7 +39,7 @@ public interface BookDao {
 
     void addBook(Book book);
 
-    int deleteBook(Long book_id);
+    Integer deleteBook(Long book_id);
 
     String queryISBNNumberByID(Long bookID);
 

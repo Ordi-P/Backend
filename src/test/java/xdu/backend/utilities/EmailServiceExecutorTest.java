@@ -9,8 +9,4 @@ public class EmailServiceExecutorTest {
     @Autowired
     EmailServiceExecutor emailServiceExecutor;
 
-    @Test
-    public void testSendReservePromptEmail() {
-        emailServiceExecutor.sendReservePromptEmail("19030500199", 5L);
-    }
 }

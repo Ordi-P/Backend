@@ -57,12 +57,12 @@ public class AliPayController {
         return alipayService.getTotalUnpaidFines();
     }
 
-    @RequestMapping("getTotalFines")
+    @RequestMapping("/getTotalFines")
     public int getTotalFines(){
         return alipayService.getTotalFines();
     }
 
-    @RequestMapping("getTotalRegistered")
+    @RequestMapping("/getTotalRegistered")
     public Integer getTotalRegistered(){
         return alipayService.getTotalRegistered();
     }

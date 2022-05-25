@@ -50,9 +50,8 @@ public class BookController {
                 date.setTime(tem);
                 Timestamp reserve_time = new Timestamp(date.getTime());
 
-                // 因为isbn_number的5、6位是出版社号，所有书几乎一样，就改成10、11位，增加随机性
-                Book book = new Book(book_name, book_author, category, location + isbn_number.substring(10, 12),
-                        isbn_code, isbn_number, true, reserve_time, "13300000001", false, "reason");
+                Book book = new Book(book_name, book_author, category, location, isbn_code, isbn_number,
+                        true, reserve_time, "13300000001", false, "reason");
 
                 bookDao.addBook(book);
                 book_id_list.add(book.getBookID());

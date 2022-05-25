@@ -42,77 +42,77 @@ public class Book implements Serializable {
     /** New column in Release 3, 遗弃的原因 */
     private String reason;
 
-    public Timestamp getReserveTime() {
-        return reserveTime;
-    }
-
-    public void setReserveTime(Timestamp reserveTime) {
-        this.reserveTime = reserveTime;
-    }
-
-    public String getReserveUser() {
-        return reserveUser;
-    }
-
-    public void setReserveUser(String reserveUser) {
-        this.reserveUser = reserveUser;
-    }
-
-    public void setBookName(String bookName) {
-        this.bookName = bookName;
-    }
-
-    public Long getBookID() {
-        return bookID;
-    }
-
-    public String getBookName() {
-        return bookName;
-    }
-
-    public String getBookAuthor() {
-        return bookAuthor;
-    }
-
-    public String getLocation() {
-        return location;
-    }
-
-    public String getIsbnCode() {
-        return isbnCode;
-    }
-
-    public String getIsbnNumber() {
-        return isbnNumber;
-    }
-
-    public boolean getAvailable() {
-        return available;
-    }
-
-    public boolean isAvailable() {
-        return available;
-    }
-
-    public boolean isAbandoned() {
-        return abandoned;
-    }
-
-    public void setBookID(long bookID) {
-        this.bookID = bookID;
-    }
-
-    public void setAbandoned(boolean abandoned) {
-        this.abandoned = abandoned;
-    }
-
-    public String getReason() {
-        return reason;
-    }
-
-    public void setReason(String reason) {
-        this.reason = reason;
-    }
+//    public Timestamp getReserveTime() {
+//        return reserveTime;
+//    }
+//
+//    public void setReserveTime(Timestamp reserveTime) {
+//        this.reserveTime = reserveTime;
+//    }
+//
+//    public String getReserveUser() {
+//        return reserveUser;
+//    }
+//
+//    public void setReserveUser(String reserveUser) {
+//        this.reserveUser = reserveUser;
+//    }
+//
+//    public void setBookName(String bookName) {
+//        this.bookName = bookName;
+//    }
+//
+//    public Long getBookID() {
+//        return bookID;
+//    }
+//
+//    public String getBookName() {
+//        return bookName;
+//    }
+//
+//    public String getBookAuthor() {
+//        return bookAuthor;
+//    }
+//
+//    public String getLocation() {
+//        return location;
+//    }
+//
+//    public String getIsbnCode() {
+//        return isbnCode;
+//    }
+//
+//    public String getIsbnNumber() {
+//        return isbnNumber;
+//    }
+//
+//    public boolean getAvailable() {
+//        return available;
+//    }
+//
+//    public boolean isAvailable() {
+//        return available;
+//    }
+//
+//    public boolean isAbandoned() {
+//        return abandoned;
+//    }
+//
+//    public void setBookID(long bookID) {
+//        this.bookID = bookID;
+//    }
+//
+//    public void setAbandoned(boolean abandoned) {
+//        this.abandoned = abandoned;
+//    }
+//
+//    public String getReason() {
+//        return reason;
+//    }
+//
+//    public void setReason(String reason) {
+//        this.reason = reason;
+//    }
 
     public Book(String bookName, String bookAuthor, String category, String location, String isbnCode, String isbnNumber, Boolean available, Timestamp reserveTime, String reserveUser, boolean abandoned, String reason) {
         this.bookName = bookName;

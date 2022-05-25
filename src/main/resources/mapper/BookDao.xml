@@ -100,6 +100,12 @@
         where book_id = #{bookID}
     </select>
 
+    <select id="queryLocationByID" resultType="String" parameterType="java.lang.Long">
+        select location
+        from book
+        where book_id = #{bookID}
+    </select>
+
     <select id="queryCollectionNumber" resultType="java.lang.Integer">
         select count(*)
         from book

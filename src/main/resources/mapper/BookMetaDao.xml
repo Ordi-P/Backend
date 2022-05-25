@@ -40,7 +40,15 @@
         from book_meta bm
                  left join book b
                            on b.isbn_number = bm.isbn_number
-        where bm.book_author like concat(concat('%', #{bookName}), '%')
+        where bm.book_author like concat(concat('%', #{author}), '%')
+    </select>
+
+    <select id="queryBookInfoByCategory" parameterType="String" resultMap="BookInfoMap">
+        select bm.book_name, bm.book_author, bm.category, bm.location, bm.isbn_number, bm.amount, sum(b.available) as available_number
+        from book_meta bm
+                 left join book b
+                           on b.isbn_number = bm.isbn_number
+        where bm.category like concat(concat('%', #{category}), '%')
     </select>
 
     <select id="queryBookInfoByISBNNumber" parameterType="String" resultMap="BookInfoMap">
@@ -48,7 +56,7 @@
         from book_meta bm
                  left join book b
                            on b.isbn_number = bm.isbn_number
-        where bm.isbn_number like concat(concat('%', #{bookName}), '%')
+        where bm.isbn_number like concat(concat('%', #{isbnNumber}), '%')
     </select>
 
     <select id="getAllBookInfos" resultMap="BookInfoMap">

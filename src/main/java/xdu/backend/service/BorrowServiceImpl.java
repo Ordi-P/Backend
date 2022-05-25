@@ -85,6 +85,13 @@ public class BorrowServiceImpl implements BorrowService {
                     distinctMap.put(bookInfo.getIsbnNumber(), bookInfo);
                 }
             }
+            // 根据分类查询
+            bookInfoList = bookMetaDao.queryBookInfoByCategory(info);
+            for (BookInfo bookInfo : bookInfoList) {
+                if (bookInfo != null) {
+                    distinctMap.put(bookInfo.getIsbnNumber(), bookInfo);
+                }
+            }
         }
 
         return new ArrayList<>(distinctMap.values());

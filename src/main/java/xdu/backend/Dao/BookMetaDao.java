@@ -20,6 +20,8 @@ public interface BookMetaDao {
 
     List<BookInfo> queryBookInfoByISBNNumber(String isbnNumber);
 
+    List<BookInfo> queryBookInfoByCategory(String category);
+
     List<BookInfo> queryBookInfoByISBN(String isbnNumber);
 
     void updateBookMeta(String isbn_code, Integer deltaNum);
@@ -29,4 +31,5 @@ public interface BookMetaDao {
     void deleteBookMeta(String isbn_code);
 
     List<BookInfo> getAllBookInfos();
+
 }

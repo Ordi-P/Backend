@@ -22,8 +22,8 @@ public class AliPayController {
         this.alipayService.aliPay(request, response, bookId, userId);
     }
 
-    @RequestMapping("/preReturnBook")
-    public long preReturnBook(String userId){
+    @RequestMapping("/getFineByUserId")
+    public long getFineByUserId(String userId){
         long res = alipayService.returnFine(userId);
         return res;
     }
@@ -38,7 +38,7 @@ public class AliPayController {
     @RequestMapping("/updateBorrowDate")
     public void updateBorrowDate(String bookId, String userId, HttpServletResponse response) throws IOException {
         alipayService.updateReturnDate(bookId,userId);
-        response.sendRedirect("http://192.168.27.1:3000/userhome");
+        response.sendRedirect("http://localhost:3000/userhome");
     }
 
     @RequestMapping("/payAll")
@@ -49,7 +49,7 @@ public class AliPayController {
     @RequestMapping("/updateAllBorrowDateByUserId")
     public void updateAllBorrowDateByUserId(String userId, HttpServletResponse response) throws IOException {
         alipayService.updateAllReturnDateByUserId(userId);
-        response.sendRedirect("http://192.168.27.1:3000/userhome");
+        response.sendRedirect("http://localhost:3000/userhome");
     }
 
     @RequestMapping("/getTotalUnpaidFines")
@@ -60,5 +60,10 @@ public class AliPayController {
     @RequestMapping("getTotalFines")
     public int getTotalFines(){
         return alipayService.getTotalFines();
+    }
+
+    @RequestMapping("getTotalRegistered")
+    public Integer getTotalRegistered(){
+        return alipayService.getTotalRegistered();
     }
 }

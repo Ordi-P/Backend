@@ -140,4 +140,11 @@
         WHERE
             returned = 1
     </select>
+
+    <select id="getTotalRegistered" resultType="java.lang.Integer">
+        SELECT
+            count(*)
+        FROM
+            `user`
+    </select>
 </mapper>

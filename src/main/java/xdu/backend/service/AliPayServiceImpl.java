@@ -77,15 +77,17 @@ public class AliPayServiceImpl implements AliPayService {
     public long returnFine(String userId) {
         List<UserBorrowInfo> userBorrowInfos = borrowDao.queryUserCurrentBorrowInfoByUserID(userId);
         Iterator<UserBorrowInfo> iterator = userBorrowInfos.iterator();
-        int res = 0;
+        long res = 0;
         while(iterator.hasNext()){
             UserBorrowInfo next = iterator.next();
-            Date date = next.getBorrowDate();
-            long endTime = date.getTime() + 10*24*60*60*1000;
-            long nowTime = new java.util.Date().getTime();
-            long bias = nowTime - endTime;
-            if(bias > 0){
-                res += bias/24/60/60/1000;
+            if(!next.getReturned()){
+                Date date = next.getReturnDate();
+                long endTime = date.getTime();
+                long nowTime = new java.util.Date().getTime();
+                long bias = nowTime - endTime;
+                if(bias > 0){
+                    res += bias/24/60/60/1000;
+                }
             }
         }
         return res;
@@ -215,5 +217,10 @@ public class AliPayServiceImpl implements AliPayService {
     @Override
     public int getTotalFines() {
         return borrowDao.getTotalFines();
+    }
+
+    @Override
+    public Integer getTotalRegistered() {
+        return borrowDao.getTotalRegistered();
     }
 }

@@ -2,13 +2,15 @@ package xdu.backend.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import xdu.backend.Dao.BookDao;
 import xdu.backend.Dao.BookMetaDao;
 import xdu.backend.Dao.BorrowDao;
 import xdu.backend.Dao.UserDao;
 import xdu.backend.exception.*;
 import xdu.backend.pojo.Book;
-import xdu.backend.pojo.BookMeta;
+import xdu.backend.utilities.EmailServiceExecutor;
+import xdu.backend.vo.AbandonedBook;
 import xdu.backend.vo.BookInfo;
 import xdu.backend.vo.UserBorrowInfo;
 
@@ -17,7 +19,7 @@ import java.util.*;
 import java.sql.Date;
 
 /**
- * @author xduTD
+ * @author 邓乐丰
  */
 @Service
 public class BorrowServiceImpl implements BorrowService {
@@ -43,6 +45,8 @@ public class BorrowServiceImpl implements BorrowService {
     UserDao userDao;
     @Autowired
     BorrowDao borrowDao;
+    @Autowired
+    EmailServiceExecutor emailServiceExecutor;
 
 
     @Override
@@ -120,6 +124,7 @@ public class BorrowServiceImpl implements BorrowService {
             if (reservedTime == null || reservedTime.before(expiredTime)) {
                 // 过期了，可以预订
                 bookDao.updateBookReservation(bookID, userID, new Timestamp(System.currentTimeMillis()));
+                emailServiceExecutor.sendReservePromptEmail(userID, bookID);
             } else {
                 // 没过期，抛出异常
                 throw new ReserveConflictException("The book has been reserved.");
@@ -146,8 +151,6 @@ public class BorrowServiceImpl implements BorrowService {
 
         return borrowDao.queryUserHistoryBorrowInfoByUserID(userID);
     }
-
-
 
     @Override
     public void lendOutBook(long bookID, String userID) throws LendOutConflictException,
@@ -253,6 +256,30 @@ public class BorrowServiceImpl implements BorrowService {
             // 书未逾期，将还书时间延后10天，达到续借的目的
             borrowDao.updateReturnDateByTransactionTD(transactionID, new Date(returnDate.getTime() + RENEW_TIME));
         }
+    }
+
+    @Override
+    public int[] queryBookStates() {
+        // 馆藏书籍数量
+        int collectionNumber = bookDao.queryCollectionNumber();
+        // 借出的书籍数量
+        int lentoutNumber = bookDao.queryLentOutNumber();
+        // 损坏的书籍数量
+        int damagedNumber = bookDao.queryDamagedNumber();
+        // 丢失的书籍数量
+        int lostNumber = bookDao.queryLostNumber();
+
+        return new int[]{collectionNumber, lentoutNumber, damagedNumber, lostNumber};
+    }
+
+    @Override
+    public List<AbandonedBook> queryLostBooks() {
+        return bookDao.queryLostBooks();
+    }
+
+    @Override
+    public List<AbandonedBook> queryDamagedBooks() {
+        return bookDao.queryDamagedBooks();
     }
 
 }

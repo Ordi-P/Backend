@@ -50,7 +50,7 @@ public class UserController {
     String logout(HttpServletRequest request, HttpServletResponse response,HttpSession session){
         Cookie[] cookies = request.getCookies();
         for (Cookie cookie:cookies) {
-            if (cookie.getName().equals("cookieUserName")){
+            if ("cookieUserName".equals(cookie.getName())){
                 session.removeAttribute("userTicket:" + cookie.getValue());
                 return "success";
             }

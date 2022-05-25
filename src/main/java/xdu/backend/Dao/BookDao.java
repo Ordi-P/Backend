@@ -3,6 +3,7 @@ package xdu.backend.Dao;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 import xdu.backend.pojo.Book;
+import xdu.backend.vo.AbandonedBook;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -48,4 +49,16 @@ public interface BookDao {
     String queryBookNameByID(Long bookID);
 
     String queryLocationByID(Long bookID);
+
+    Integer queryCollectionNumber();
+
+    Integer queryLentOutNumber();
+
+    Integer queryDamagedNumber();
+
+    Integer queryLostNumber();
+
+    List<AbandonedBook> queryLostBooks();
+
+    List<AbandonedBook> queryDamagedBooks();
 }

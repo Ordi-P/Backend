@@ -3,6 +3,7 @@ package xdu.backend.service;
 import xdu.backend.exception.*;
 import xdu.backend.pojo.Book;
 import xdu.backend.pojo.BookMeta;
+import xdu.backend.vo.BookInfo;
 import xdu.backend.vo.UserBorrowInfo;
 
 import java.util.List;
@@ -16,7 +17,7 @@ public interface BorrowService {
      * @param bookInfo 书籍的相关信息。
      * @return 书籍元信息的列表
      */
-    List<BookMeta> searchBook(String bookInfo);
+    List<BookInfo> searchBook(String bookInfo);
 
     /**
      * 预订书籍

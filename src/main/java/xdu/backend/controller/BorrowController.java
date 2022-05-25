@@ -5,8 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import xdu.backend.exception.*;
 import xdu.backend.pojo.Book;
-import xdu.backend.pojo.BookMeta;
 import xdu.backend.service.BorrowServiceImpl;
+import xdu.backend.vo.BookInfo;
 import xdu.backend.vo.ReqParam;
 import xdu.backend.vo.UserBorrowInfo;
 
@@ -25,7 +25,7 @@ public class BorrowController {
 
     @RequestMapping(value = "/searchbook", method = RequestMethod.GET)
     @ResponseBody
-    public List<BookMeta> searchBook(@RequestParam(value = "info", required = false) String bookInfo) {
+    public List<BookInfo> searchBook(@RequestParam(value = "info", required = false) String bookInfo) {
         return borrowService.searchBook(bookInfo);
     }
 

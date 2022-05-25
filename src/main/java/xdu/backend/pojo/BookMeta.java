@@ -14,7 +14,6 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 public class BookMeta {
 
-    /** PRIMARY KEY */
     private String isbnCode;
 
     private String bookName;

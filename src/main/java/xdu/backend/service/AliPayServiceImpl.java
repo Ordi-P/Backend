@@ -146,7 +146,7 @@ public class AliPayServiceImpl implements AliPayService {
         DefaultAlipayClient client = new DefaultAlipayClient(AlipayConfig.gatewayUrl, AlipayConfig.APP_ID, AlipayConfig.APP_PRIVATE_KEY, "json", AlipayConfig.CHARSET, AlipayConfig.ALIPAY_PUBLIC_KEY, AlipayConfig.sign_type);
         AlipayTradePagePayRequest alipayTradePagePayRequest = new AlipayTradePagePayRequest();
         //alipayTradePagePayRequest.setNotifyUrl(AlipayConfig.notify_url + bookId);
-        alipayTradePagePayRequest.setReturnUrl("http://localhost:8080/updateAllBorrowDateByUserId?userId="+userId);
+        alipayTradePagePayRequest.setReturnUrl("http://124.70.53.71:8080/updateAllBorrowDateByUserId?userId="+userId);
         List<UserBorrowInfo> userBorrowInfos = borrowDao.queryUserCurrentBorrowInfoByUserID(userId);
         Iterator<UserBorrowInfo> iterator = userBorrowInfos.iterator();
         long sumMoney = 0l;
@@ -205,5 +205,15 @@ public class AliPayServiceImpl implements AliPayService {
             }
         }
         userDao.updateUserEnable(true,userId);
+    }
+
+    @Override
+    public int getTotalUnpaidFines() {
+        return borrowDao.getTotalUnpaidFines();
+    }
+
+    @Override
+    public int getTotalFines() {
+        return borrowDao.getTotalFines();
     }
 }

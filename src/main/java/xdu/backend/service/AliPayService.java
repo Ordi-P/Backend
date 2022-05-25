@@ -18,4 +18,8 @@ public interface AliPayService {
     void payAll(HttpServletRequest request, HttpServletResponse response, String userId) throws IOException;
 
     void updateAllReturnDateByUserId(String userId);
+
+    int getTotalUnpaidFines();
+
+    int getTotalFines();
 }

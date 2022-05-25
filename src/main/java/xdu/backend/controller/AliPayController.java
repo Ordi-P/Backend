@@ -51,4 +51,14 @@ public class AliPayController {
         alipayService.updateAllReturnDateByUserId(userId);
         response.sendRedirect("http://192.168.27.1:3000/userhome");
     }
+
+    @RequestMapping("/getTotalUnpaidFines")
+    public int getTotalUnpaidFines(){
+        return alipayService.getTotalUnpaidFines();
+    }
+
+    @RequestMapping("getTotalFines")
+    public int getTotalFines(){
+        return alipayService.getTotalFines();
+    }
 }

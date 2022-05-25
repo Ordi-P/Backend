@@ -53,4 +53,8 @@ public interface BorrowDao {
     int updateReturnDateByBookIdAndUserId(String userId, long bookId, Date newDate);
 
     int updateReturnedByBookIdAndUserId(Long bookId, String userId, boolean returned);
+
+    int getTotalUnpaidFines();
+
+    int getTotalFines();
 }

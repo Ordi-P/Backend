@@ -123,4 +123,21 @@
         update borrow_record set returned = 1  where book_id = #{bookId} and user_id = #{userId} and returned = 0
     </update>
 
+    <select id="getTotalUnpaidFines" resultType="int">
+        SELECT
+            sum( fine )
+        FROM
+            borrow_record
+        WHERE
+            returned = 0
+    </select>
+
+    <select id="getTotalFines" resultType="int">
+        SELECT
+            sum( fine )
+        FROM
+            borrow_record
+        WHERE
+            returned = 1
+    </select>
 </mapper>

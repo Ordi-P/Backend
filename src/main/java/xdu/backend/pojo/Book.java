@@ -94,15 +94,34 @@ public class Book implements Serializable {
         this.bookID = bookID;
     }
 
-    public Book(String bookName, String bookAuthor, String location, String isbnCode, String isbnNumber, boolean available, Timestamp reserveTime, String reserveUser) {
+    public boolean isAbandoned() {
+        return abandoned;
+    }
+
+    public void setAbandoned(boolean abandoned) {
+        this.abandoned = abandoned;
+    }
+
+    public String getReason() {
+        return reason;
+    }
+
+    public void setReason(String reason) {
+        this.reason = reason;
+    }
+
+    public Book(String bookName, String bookAuthor, String category, String location, String isbnCode, String isbnNumber, Boolean available, Timestamp reserveTime, String reserveUser, boolean abandoned, String reason) {
         this.bookName = bookName;
         this.bookAuthor = bookAuthor;
+        this.category = category;
         this.location = location;
         this.isbnCode = isbnCode;
         this.isbnNumber = isbnNumber;
         this.available = available;
         this.reserveTime = reserveTime;
         this.reserveUser = reserveUser;
+        this.abandoned = abandoned;
+        this.reason = reason;
     }
 
     @Override

@@ -27,7 +27,7 @@
         where isbn_code like concat(concat('%', #{isbnCode}), '%')
     </select>
 
-    <select id="queryBookInfoByName" parameterType="String" resultType="xdu.backend.pojo.BookMeta">
+    <select id="queryBookInfoByName" parameterType="String" resultMap="BookInfoMap">
         select bm.book_name, bm.book_author, bm.category, bm.location, bm.isbn_number, bm.amount, sum(b.available) as available_number
         from book_meta bm
                  left join book b
@@ -35,7 +35,7 @@
         where bm.book_name like concat(concat('%', #{bookName}), '%')
     </select>
 
-    <select id="queryBookInfoByAuthor" parameterType="String" resultType="xdu.backend.pojo.BookMeta">
+    <select id="queryBookInfoByAuthor" parameterType="String" resultMap="BookInfoMap">
         select bm.book_name, bm.book_author, bm.category, bm.location, bm.isbn_number, bm.amount, sum(b.available) as available_number
         from book_meta bm
                  left join book b
@@ -43,7 +43,7 @@
         where bm.book_author like concat(concat('%', #{bookName}), '%')
     </select>
 
-    <select id="queryBookInfoByISBNNumber" parameterType="String" resultType="xdu.backend.pojo.BookMeta">
+    <select id="queryBookInfoByISBNNumber" parameterType="String" resultMap="BookInfoMap">
         select bm.book_name, bm.book_author, bm.category, bm.location, bm.isbn_number, bm.amount, sum(b.available) as available_number
         from book_meta bm
                  left join book b
@@ -51,7 +51,7 @@
         where bm.isbn_number like concat(concat('%', #{bookName}), '%')
     </select>
 
-    <select id="getAllBookInfos" resultMap="xdu.backend.vo.BookInfo">
+    <select id="getAllBookInfos" resultMap="BookInfoMap">
         select bm.book_name, bm.book_author, bm.category, bm.location, bm.isbn_number, bm.amount, sum(b.available) as available_number
         from book_meta bm
                  left join book b

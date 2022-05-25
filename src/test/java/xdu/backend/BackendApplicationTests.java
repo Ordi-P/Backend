@@ -9,13 +9,13 @@ import xdu.backend.controller.BookController;
 @SpringBootTest
 class BackendApplicationTests {
 
-    @Autowired
-    BookController bookController;
+//    @Autowired
+//    BookController bookController;
 
     @Test
     void contextLoads() {
-        JSONObject test = bookController.addBook("test", "123", "1234567890123", "1234567890123", 1);
-        System.out.println(test);
+//        JSONObject test = bookController.addBook("test", "123", "1234567890123", "1234567890123", 1);
+//        System.out.println(test);
     }
 
 }

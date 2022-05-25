@@ -2,10 +2,23 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="xdu.backend.Dao.BookMetaDao">
 
-    <select id="queryBookMetaByISBN" parameterType="String" resultType="xdu.backend.pojo.BookMeta">
-        select *
-        from book_meta
-        where isbn_number = #{isbnNumber}
+    <resultMap id="BookInfoMap" type="xdu.backend.vo.BookInfo">
+        <result column="book_name" property="bookName"/>
+        <result column="book_author" property="bookAuthor"/>
+        <result column="category" property="category"/>
+        <result column="location" property="location"/>
+        <result column="isbn_number" property="isbnNumber"/>
+        <result column="amount" property="amount"/>
+        <result column="available_number" property="available"/>
+    </resultMap>
+
+
+    <select id="queryBookInfoByISBN" parameterType="String" resultMap="BookInfoMap">
+        select bm.book_name, bm.book_author, bm.category, bm.location, bm.isbn_number, bm.amount, sum(b.available) as available_number
+        from book_meta bm
+            left join book b
+            on b.isbn_number = bm.isbn_number
+        where bm.isbn_number = #{isbnNumber}
     </select>
 
     <select id="queryBookMetaByISBNCode" parameterType="String" resultType="xdu.backend.pojo.BookMeta">
@@ -14,27 +27,35 @@
         where isbn_code like concat(concat('%', #{isbnCode}), '%')
     </select>
 
-    <select id="queryBookMetaByName" parameterType="String" resultType="xdu.backend.pojo.BookMeta">
-        select *
-        from book_meta
-        where book_name like concat(concat('%', #{bookName}), '%')
+    <select id="queryBookInfoByName" parameterType="String" resultMap="BookInfoMap">
+        select bm.book_name, bm.book_author, bm.category, bm.location, bm.isbn_number, bm.amount, sum(b.available) as available_number
+        from book_meta bm
+                 left join book b
+                           on b.isbn_number = bm.isbn_number
+        where bm.book_name like concat(concat('%', #{bookName}), '%')
     </select>
 
-    <select id="queryBookMetaByAuthor" parameterType="String" resultType="xdu.backend.pojo.BookMeta">
-        select *
-        from book_meta
-        where book_author like concat(concat('%', #{author}), '%')
+    <select id="queryBookInfoByAuthor" parameterType="String" resultMap="BookInfoMap">
+        select bm.book_name, bm.book_author, bm.category, bm.location, bm.isbn_number, bm.amount, sum(b.available) as available_number
+        from book_meta bm
+                 left join book b
+                           on b.isbn_number = bm.isbn_number
+        where bm.book_author like concat(concat('%', #{bookName}), '%')
     </select>
 
-    <select id="queryBookMetaByISBNNumber" parameterType="String" resultType="xdu.backend.pojo.BookMeta">
-        select *
-        from book_meta
-        where isbn_number like concat(concat('%', #{isbnNumber}),'%')
+    <select id="queryBookInfoByISBNNumber" parameterType="String" resultMap="BookInfoMap">
+        select bm.book_name, bm.book_author, bm.category, bm.location, bm.isbn_number, bm.amount, sum(b.available) as available_number
+        from book_meta bm
+                 left join book b
+                           on b.isbn_number = bm.isbn_number
+        where bm.isbn_number like concat(concat('%', #{bookName}), '%')
     </select>
 
-    <select id="getAllBookMetas" resultType="xdu.backend.pojo.BookMeta">
-        select *
-        from book_meta
+    <select id="getAllBookInfos" resultMap="BookInfoMap">
+        select bm.book_name, bm.book_author, bm.category, bm.location, bm.isbn_number, bm.amount, sum(b.available) as available_number
+        from book_meta bm
+                 left join book b
+                           on b.isbn_number = bm.isbn_number
         limit 50
     </select>
 

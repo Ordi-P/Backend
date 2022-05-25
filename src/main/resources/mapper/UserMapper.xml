@@ -50,4 +50,8 @@
         where user_id = #{userID}
     </select>
 
+    <update id="updateEmailByUserId">
+        update user set email = #{email} where user_id = #{id}
+    </update>
+
 </mapper>

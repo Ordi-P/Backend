@@ -45,4 +45,18 @@ public interface BorrowDao {
     void updateReturnDateByTransactionTD(@Param("transactionID") Long transactionID, @Param("date") Date date);
 
     String queryBorrowerByTransactionID(Long transactionID);
+
+    int updateBorrowRecordFine(Long bookID, String money);
+
+    Date getNoReturnDateByUserIdAndBookId(String userId, long bookId);
+
+    int updateReturnDateByBookIdAndUserId(String userId, long bookId, Date newDate);
+
+    int updateReturnedByBookIdAndUserId(Long bookId, String userId, boolean returned);
+
+    int getTotalUnpaidFines();
+
+    int getTotalFines();
+
+    Integer getTotalRegistered();
 }

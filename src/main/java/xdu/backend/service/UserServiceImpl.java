@@ -86,4 +86,9 @@ public class UserServiceImpl implements UserService{
         if (res > 0) return true;
         return false;
     }
+
+    @Override
+    public int updateEmailByUserId(String id, String email) {
+        return userDao.updateEmailByUserId(id,email);
+    }
 }

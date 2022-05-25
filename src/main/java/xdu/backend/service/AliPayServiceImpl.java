@@ -37,13 +37,14 @@ public class AliPayServiceImpl implements AliPayService {
     BookDao bookDao;
 
     @Override
-    public void aliPay(HttpServletRequest request, HttpServletResponse response, String bookId) throws IOException {
+    public void aliPay(HttpServletRequest request, HttpServletResponse response, String bookId, String userId) throws IOException {
         DefaultAlipayClient client = new DefaultAlipayClient(AlipayConfig.gatewayUrl, AlipayConfig.APP_ID, AlipayConfig.APP_PRIVATE_KEY, "json", AlipayConfig.CHARSET, AlipayConfig.ALIPAY_PUBLIC_KEY, AlipayConfig.sign_type);
         AlipayTradePagePayRequest alipayTradePagePayRequest = new AlipayTradePagePayRequest();
         //alipayTradePagePayRequest.setNotifyUrl(AlipayConfig.notify_url + bookId);
-        alipayTradePagePayRequest.setReturnUrl(AlipayConfig.return_url + bookId);
-        Date startDate = borrowDao.queryBorrowDateByBookID(Long.parseLong(bookId));
-        long startTime = startDate.getTime() + 10*24*60*60*1000;
+        alipayTradePagePayRequest.setReturnUrl(AlipayConfig.return_url + bookId + "&userId=" + userId);
+        Date endDate = borrowDao.getNoReturnDateByUserIdAndBookId(userId, Long.parseLong(bookId));
+        if(endDate == null) return;
+        long startTime = endDate.getTime();
         long endTime = new java.util.Date().getTime();
         String money = ((Long) ((endTime - startTime)/24/60/60/1000)).toString();
         String subject = "Penalty amount";
@@ -76,73 +77,162 @@ public class AliPayServiceImpl implements AliPayService {
 
     @Override
     public long returnFine(String userId) {
-        List<UserBorrowInfo> userBorrowInfos = borrowDao.queryUserBorrowInfoByID(userId);
+        List<UserBorrowInfo> userBorrowInfos = borrowDao.queryUserCurrentBorrowInfoByUserID(userId);
         Iterator<UserBorrowInfo> iterator = userBorrowInfos.iterator();
-        int res = 0;
+        long res = 0;
         while(iterator.hasNext()){
             UserBorrowInfo next = iterator.next();
-            Date date = next.getBorrowDate();
-            long endTime = date.getTime() + 10*24*60*60*1000;
-            long nowTime = new java.util.Date().getTime();
-            long bias = nowTime - endTime;
-            if(bias > 0){
-                res += bias/24/60/60/1000;
+            if(!next.getReturned()){
+                Date date = next.getReturnDate();
+                long endTime = date.getTime();
+                long nowTime = new java.util.Date().getTime();
+                long bias = nowTime - endTime;
+                if(bias > 0){
+                    res += bias/24/60/60/1000;
+                }
             }
         }
         return res;
     }
 
     @Override
-    public boolean returnBook(String bookId) {
+    public boolean returnBook(String bookId, String userId, HttpServletResponse response) {
         Long no = Long.parseLong(bookId);
-        Date date = borrowDao.queryBorrowDateByBookID(no);
+        Date date = borrowDao.getNoReturnDateByUserIdAndBookId(userId,no);
+        if(date == null) return false;
         java.util.Date tempDate = new java.util.Date();
-        if(tempDate.getTime() - (date.getTime() + 10*24*60*60*1000) > 0){
+        if(tempDate.getTime() - date.getTime() > 0){
             return false;
         }
-        String userId = borrowDao.queryBorrowerByBookID(no);
-        int res = borrowDao.deleteBorrowRecordByBookId(no);
+        borrowDao.updateReturnDateByBookIdAndUserId(userId,no,new Date(new java.util.Date().getTime()));
+        borrowDao.updateReturnedByBookIdAndUserId(no,userId,true);
         bookDao.updateBookAvailability(no,true);
-        List<UserBorrowInfo> userBorrowInfos = borrowDao.queryUserBorrowInfoByID(userId);
+        List<UserBorrowInfo> userBorrowInfos = borrowDao.queryUserCurrentBorrowInfoByUserID(userId);
         Iterator<UserBorrowInfo> iterator = userBorrowInfos.iterator();
         while(iterator.hasNext()){
             UserBorrowInfo borrowInfo = iterator.next();
-            Date borrowDate = borrowInfo.getBorrowDate();
-            long endTime = borrowDate.getTime() + 10*24*60*60*1000;
-            long nowTime = new java.util.Date().getTime();
-            long bias = nowTime - endTime;
-            if(bias > 0){
-                userDao.updateUserEnable(false,userId);
-                return true;
+            if (!borrowInfo.getReturned()){
+                Date shouldReturnDate = borrowDao.getNoReturnDateByUserIdAndBookId(userId, borrowInfo.getBookID());
+                if(shouldReturnDate.getTime() < new java.util.Date().getTime()){
+                    userDao.updateUserEnable(false,userId);
+                    return true;
+                }
             }
         }
         userDao.updateUserEnable(true,userId);
-        if(res > 0) return true;
-        return false;
+        return true;
     }
 
     @Override
-    public void updateReturnDate(String bookId) {
+    public void updateReturnDate(String bookId, String userId) {
         long bId = Long.parseLong(bookId);
-        Date date = borrowDao.queryBorrowDateByBookID(bId);
+        Date recordDate = borrowDao.getNoReturnDateByUserIdAndBookId(userId, bId);
+        if(recordDate == null) return;
         java.util.Date date1 = new java.util.Date();
-        long newDate = date1.getTime();
+        if(recordDate.getTime() < date1.getTime()) return;
+        long newDate = date1.getTime() + 10*24*60*60*1000;
         Date date2 = new Date(newDate);
-        borrowDao.updateBorrowRecord(bId,date2);
-        String userId = borrowDao.queryBorrowerByBookID(bId);
-        List<UserBorrowInfo> userBorrowInfos = borrowDao.queryUserBorrowInfoByID(userId);
+        borrowDao.updateReturnDateByBookIdAndUserId(userId,bId,date2);
+        List<UserBorrowInfo> userBorrowInfos = borrowDao.queryUserCurrentBorrowInfoByUserID(userId);
         Iterator<UserBorrowInfo> iterator = userBorrowInfos.iterator();
         while(iterator.hasNext()){
             UserBorrowInfo borrowInfo = iterator.next();
             Date borrowDate = borrowInfo.getBorrowDate();
-            long endTime = borrowDate.getTime() + 11*24*60*60*1000;
+            Date endDate = borrowDao.getNoReturnDateByUserIdAndBookId(userId, bId);
+            if(endDate == null) return;
+            long endTime = endDate.getTime();
             long nowTime = new java.util.Date().getTime();
             long bias = nowTime - endTime;
-            if(bias > 0){
+            if(bias > 0 && !borrowInfo.getReturned()){
                 userDao.updateUserEnable(false,userId);
                 return;
             }
         }
         userDao.updateUserEnable(true,userId);
+    }
+
+    @Override
+    public void payAll(HttpServletRequest request, HttpServletResponse response, String userId) throws IOException {
+        DefaultAlipayClient client = new DefaultAlipayClient(AlipayConfig.gatewayUrl, AlipayConfig.APP_ID, AlipayConfig.APP_PRIVATE_KEY, "json", AlipayConfig.CHARSET, AlipayConfig.ALIPAY_PUBLIC_KEY, AlipayConfig.sign_type);
+        AlipayTradePagePayRequest alipayTradePagePayRequest = new AlipayTradePagePayRequest();
+        //alipayTradePagePayRequest.setNotifyUrl(AlipayConfig.notify_url + bookId);
+        alipayTradePagePayRequest.setReturnUrl("http://124.70.53.71:8080/updateAllBorrowDateByUserId?userId="+userId);
+        List<UserBorrowInfo> userBorrowInfos = borrowDao.queryUserCurrentBorrowInfoByUserID(userId);
+        Iterator<UserBorrowInfo> iterator = userBorrowInfos.iterator();
+        long sumMoney = 0l;
+        while(iterator.hasNext()){
+            UserBorrowInfo borrowInfo = iterator.next();
+            Date borrowDate = borrowInfo.getBorrowDate();
+            Date endDate = borrowDao.getNoReturnDateByUserIdAndBookId(userId, borrowInfo.getBookID());
+            if(endDate == null) return;
+            long endTime = endDate.getTime();
+            long nowTime = new java.util.Date().getTime();
+            long bias = nowTime - endTime;
+            if(bias > 0){
+                sumMoney += (Long) (bias/24/60/60/1000);
+            }
+        }
+        String money = ((Long) (sumMoney)).toString();
+        String subject = "Penalty amount";
+        String body = "Penalty amount";
+        JSONObject content = new JSONObject();
+        String[] tradeNos = UUID.randomUUID().toString().split("-");
+        StringBuilder tradeNo = new StringBuilder();
+        for (int i = 0; i < tradeNos.length; i++) {
+            tradeNo.append(tradeNos[i]);
+        }
+        content.put("out_trade_no", tradeNo.toString());
+        content.put("total_amount", money);
+        content.put("subject", subject);
+        content.put("body", body);
+        content.put("product_code", "FAST_INSTANT_TRADE_PAY");
+        alipayTradePagePayRequest.setBizContent(content.toString());
+        String form = "";
+
+        try {
+            form = ((AlipayTradePagePayResponse) client.pageExecute(alipayTradePagePayRequest)).getBody();
+        } catch (AlipayApiException var11) {
+            var11.printStackTrace();
+        }
+
+        response.setContentType("text/html;charset=" + AlipayConfig.CHARSET);
+        response.getWriter().write(form);
+        response.getWriter().flush();
+        response.getWriter().close();
+    }
+
+    @Override
+    public void updateAllReturnDateByUserId(String userId) {
+        List<UserBorrowInfo> userBorrowInfos = borrowDao.queryUserCurrentBorrowInfoByUserID(userId);
+        Iterator<UserBorrowInfo> iterator = userBorrowInfos.iterator();
+        while(iterator.hasNext()){
+            UserBorrowInfo borrowInfo = iterator.next();
+            java.util.Date newBorrowDate = new java.util.Date();
+            Date endDate = borrowDao.getNoReturnDateByUserIdAndBookId(userId, borrowInfo.getBookID());
+            if(endDate == null) return;
+            long shouldReturnTime =  endDate.getTime();
+            long bias = newBorrowDate.getTime() - shouldReturnTime;
+            if(bias > 0){
+                borrowDao.updateReturnDateByBookIdAndUserId(userId,borrowInfo.getBookID(),new Date(new java.util.Date().getTime() + 10*24*60*60*1000));
+                String money = ((Long) ((bias)/24/60/60/1000)).toString();
+                borrowDao.updateBorrowRecordFine(borrowInfo.getBookID(), money);
+            }
+        }
+        userDao.updateUserEnable(true,userId);
+    }
+
+    @Override
+    public int getTotalUnpaidFines() {
+        return borrowDao.getTotalUnpaidFines();
+    }
+
+    @Override
+    public int getTotalFines() {
+        return borrowDao.getTotalFines();
+    }
+
+    @Override
+    public Integer getTotalRegistered() {
+        return borrowDao.getTotalRegistered();
     }
 }

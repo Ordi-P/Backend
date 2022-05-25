@@ -1,12 +1,18 @@
 package xdu.backend.service;
 
+import com.alibaba.fastjson.JSONObject;
 import xdu.backend.exception.*;
 import xdu.backend.pojo.Book;
 import xdu.backend.pojo.BookMeta;
+import xdu.backend.vo.AbandonedBook;
+import xdu.backend.vo.BookInfo;
 import xdu.backend.vo.UserBorrowInfo;
 
 import java.util.List;
 
+/**
+ * @author 邓乐丰
+ */
 public interface BorrowService {
     /**
      * 查找书籍如果输入符合ISBN的格式，则只根据ISBN进
@@ -16,7 +22,7 @@ public interface BorrowService {
      * @param bookInfo 书籍的相关信息。
      * @return 书籍元信息的列表
      */
-    List<BookMeta> searchBook(String bookInfo);
+    List<BookInfo> searchBook(String bookInfo);
 
     /**
      * 预订书籍
@@ -71,4 +77,29 @@ public interface BorrowService {
      * @param userID 用户ID
      */
     void renew(Long transactionID, Long bookID, String userID) throws UserNotExistsException, BookNotExistsException, UserOperationException, BorrowTimeExpireException;
+
+    /**
+     * 每次管理员加载主界面的时候都会执行一次这个请求
+     *
+     * @return int[] 四个数字：
+     *        [0] collectionNumber 馆藏书籍数量
+     *        [1] lentoutNumber 借出的书籍数量
+     *        [2] damagedNumber 损坏的书籍数量
+     *        [3] lostNumber 丢失的书籍数量
+     */
+    int[] queryBookStates();
+
+    /**
+     * 查询因丢失而删除的书籍的详细信息
+     *
+     * @return lostBookList 丢失而删除的书的列表
+     */
+    List<AbandonedBook> queryLostBooks();
+
+    /**
+     * 查询因损坏而删除的书籍的详细信息
+     *
+     * @return damagedBookList 损坏而删除的书的列表
+     */
+    List<AbandonedBook> queryDamagedBooks();
 }

@@ -34,7 +34,7 @@
         set borrow_date = #{date}
         where book_id = #{bookID}
     </update>
-    
+
     <resultMap id="borrowInfoResultMap" type="xdu.backend.vo.UserBorrowInfo">
         <id property="transactionID" column="borrow_tx_id"/>
         <result property="bookID" column="book_id" />
@@ -46,12 +46,12 @@
         <result property="returned" column="returned"/>
         <result property="fine" column="fine"/>
     </resultMap>
-    
+
     <select id="queryUserCurrentBorrowInfoByUserID" resultMap="borrowInfoResultMap" parameterType="String">
         SELECT br.borrow_tx_id, br.book_id, br.user_id, b.book_name, b.book_author, br.borrow_date, br.return_date, br.returned, br.fine
         FROM borrow_record br
-        LEFT JOIN book b
-            ON br.book_id = b.book_id
+                 LEFT JOIN book b
+                           ON br.book_id = b.book_id
         WHERE br.user_id = #{userID} and br.returned = false;
     </select>
 
@@ -107,4 +107,44 @@
         where borrow_tx_id = #{transactionID}
     </select>
 
+    <update id="updateBorrowRecordFine">
+        update borrow_record set fine = fine + #{money} where book_id = #{bookID}
+    </update>
+
+    <select id="getNoReturnDateByUserIdAndBookId" resultType="java.sql.Date">
+        select return_date from borrow_record where book_id = #{bookId} and user_id = #{userId} and returned = 0
+    </select>
+
+    <update id="updateReturnDateByBookIdAndUserId">
+        update borrow_record set return_date = #{newDate}  where book_id = #{bookId} and user_id = #{userId} and returned = 0
+    </update>
+
+    <update id="updateReturnedByBookIdAndUserId">
+        update borrow_record set returned = 1  where book_id = #{bookId} and user_id = #{userId} and returned = 0
+    </update>
+
+    <select id="getTotalUnpaidFines" resultType="int">
+        SELECT
+            sum( fine )
+        FROM
+            borrow_record
+        WHERE
+            returned = 0
+    </select>
+
+    <select id="getTotalFines" resultType="int">
+        SELECT
+            sum( fine )
+        FROM
+            borrow_record
+        WHERE
+            returned = 1
+    </select>
+
+    <select id="getTotalRegistered" resultType="java.lang.Integer">
+        SELECT
+            count(*)
+        FROM
+            `user`
+    </select>
 </mapper>

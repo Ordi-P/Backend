@@ -50,7 +50,7 @@ public class UserController {
     String logout(HttpServletRequest request, HttpServletResponse response,HttpSession session){
         Cookie[] cookies = request.getCookies();
         for (Cookie cookie:cookies) {
-            if (cookie.getName().equals("cookieUserName")){
+            if ("cookieUserName".equals(cookie.getName())){
                 session.removeAttribute("userTicket:" + cookie.getValue());
                 return "success";
             }
@@ -122,6 +122,16 @@ public class UserController {
 
         boolean flag = userService.updatePasswordById(id,password);
         if (flag) return "success";
+        return "failed";
+    }
+
+    @RequestMapping("/updateEmail")
+    String updateEmail(@RequestBody User user){
+        String email = user.getEmail();
+        if(email == null) return "false";
+        if(userService.updateEmailByUserId(user.getId(),email) > 0){
+            return "success";
+        }
         return "failed";
     }
 

@@ -78,7 +78,7 @@
         where book_id = #{bookID}
     </select>
 
-    <update id="undoBookReserve">
+    <update id="undoBookReservation">
         update book
         set reserve_time = #{reserveTime}
         where isbn_number = #{isbnNumber} and reserve_user = #{userID}
@@ -99,6 +99,51 @@
         from book
         where book_id = #{bookID}
     </select>
+
+    <select id="queryCollectionNumber" resultType="java.lang.Integer">
+        select count(*)
+        from book
+        where available = true and abandoned = false
+    </select>
+
+    <select id="queryLentOutNumber" resultType="java.lang.Integer">
+        select count(*)
+        from book
+        where available = false and abandoned = false
+    </select>
+
+    <select id="queryDamagedNumber" resultType="java.lang.Integer">
+        select count(*)
+        from book
+        where abandoned = true and reason = 'lost'
+    </select>
+
+    <select id="queryLostNumber" resultType="java.lang.Integer">
+        select count(*)
+        from book
+        where abandoned = true and reason = 'damaged'
+    </select>
+
+    <resultMap id="AbandonedBookMap" type="xdu.backend.vo.AbandonedBook">
+        <result column="book_name" property="bookName"/>
+        <result column="book_id" property="bookID"/>
+        <result column="isbn_number" property="ISBNNumber"/>
+        <result column="reason" property="reason"/>
+    </resultMap>
+
+    <select id="queryLostBooks" resultMap="AbandonedBookMap">
+        select book_name, book_id, isbn_number, reason
+        from book
+        where abandoned = true and reason = 'lost'
+    </select>
+
+    <select id="queryDamagedBooks" resultMap="AbandonedBookMap">
+        select book_name, book_id, isbn_number, reason
+        from book
+        where abandoned = true and reason = 'damaged'
+    </select>
+
+
 
 </mapper>
 

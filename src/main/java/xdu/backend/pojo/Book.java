@@ -102,10 +102,6 @@ public class Book implements Serializable {
         this.bookID = bookID;
     }
 
-    public boolean isAbandoned() {
-        return abandoned;
-    }
-
     public void setAbandoned(boolean abandoned) {
         this.abandoned = abandoned;
     }

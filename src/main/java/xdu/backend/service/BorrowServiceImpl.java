@@ -131,7 +131,7 @@ public class BorrowServiceImpl implements BorrowService {
             if (reservedTime == null || reservedTime.before(expiredTime)) {
                 // 过期了，可以预订
                 bookDao.updateBookReservation(bookID, userID, new Timestamp(System.currentTimeMillis()));
-                emailServiceExecutor.sendReservePromptEmail(userID, bookID);
+                // emailServiceExecutor.sendReservePromptEmail(userID, bookID);
             } else {
                 // 没过期，抛出异常
                 throw new ReserveConflictException("The book has been reserved.");

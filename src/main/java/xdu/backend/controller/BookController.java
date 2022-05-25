@@ -8,6 +8,7 @@ import xdu.backend.Dao.BookDao;
 import xdu.backend.Dao.BookMetaDao;
 import xdu.backend.pojo.Book;
 import xdu.backend.pojo.BookMeta;
+import xdu.backend.vo.BookInfo;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -54,7 +55,7 @@ public class BookController {
                 bookDao.addBook(book);
                 book_id_list.add(book.getBookID());
             }
-            List<BookMeta> bookMetas = bookMetaDao.queryBookMetaByISBNCode(isbn_code);
+            List<BookInfo> bookMetas = bookMetaDao.queryBookMetaByISBNCode(isbn_code);
             if (bookMetas.size() == 0){
                 BookMeta bookMeta = new BookMeta(isbn_code, book_name, book_author, "null", "A-" + isbn_number.substring(10, 12), isbn_number, 0);
                 bookMetaDao.insertBookMeta(bookMeta);
@@ -90,7 +91,7 @@ public class BookController {
             book.setAbandoned(false);
             book.setReason(reason);
 
-            List<BookMeta> list = bookMetaDao.queryBookMetaByISBNCode(book.getIsbnCode());
+            List<BookInfo> list = bookMetaDao.queryBookMetaByISBNCode(book.getIsbnCode());
             if (list.size() != 0){
                 bookMetaDao.updateBookMeta(book.getIsbnCode(), -1);
 //                if (list.get(0).getAmount() > 1) {

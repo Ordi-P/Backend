@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import xdu.backend.exception.*;
 import xdu.backend.pojo.Book;
 import xdu.backend.service.BorrowServiceImpl;
+import xdu.backend.vo.AbandonedBook;
 import xdu.backend.vo.BookInfo;
 import xdu.backend.vo.ReqParam;
 import xdu.backend.vo.UserBorrowInfo;
@@ -220,6 +221,33 @@ public class BorrowController {
         return json;
     }
 
+    @RequestMapping(value = "/bookstates", method = RequestMethod.GET)
+    @ResponseBody
+    public JSONObject getBookStates() {
+        // 获取书籍状态状态
+        int[] states = borrowService.queryBookStates();
+        JSONObject json = new JSONObject();
+
+        // 状态与字段映射起来
+        json.put("collectionNumber", states[0]);
+        json.put("lentoutNumber", states[1]);
+        json.put("damagedNumber", states[2]);
+        json.put("lostNumber", states[3]);
+
+        return json;
+    }
+
+    @RequestMapping(value = "/lostbooks", method = RequestMethod.GET)
+    @ResponseBody
+    public List<AbandonedBook> getLostBooks() {
+        return borrowService.queryLostBooks();
+    }
+
+    @RequestMapping(value = "/damagedbooks", method = RequestMethod.GET)
+    @ResponseBody
+    public List<AbandonedBook> getDamagedBooks() {
+        return borrowService.queryDamagedBooks();
+    }
 
     /**
      * 判断userID是否符合id格式

@@ -26,10 +26,12 @@ public class BookController {
 
     @RequestMapping(value = "/addbook", method = RequestMethod.POST)
     public JSONObject addBook(@RequestParam(value = "book_name", required = true) String book_name,
-                   @RequestParam(value = "book_author", required = true) String book_author,
-                   @RequestParam(value = "isbn_code", required = false) String isbn_code,
-                   @RequestParam(value = "isbn_number", required = true) String isbn_number,
-                   @RequestParam(value = "num", required = true) int num
+                              @RequestParam(value = "book_author", required = true) String book_author,
+                              @RequestParam(value = "isbn_code", required = false) String isbn_code,
+                              @RequestParam(value = "isbn_number", required = true) String isbn_number,
+                              @RequestParam(value = "num", required = true) int num,
+                              @RequestParam(value = "location", required = true) String location,
+                              @RequestParam(value = "category", required = true) String category
                    ) {
         JSONObject json = new JSONObject();
         ArrayList<Long> book_id_list = new ArrayList<>();
@@ -49,7 +51,7 @@ public class BookController {
                 Timestamp reserve_time = new Timestamp(date.getTime());
 
                 // 因为isbn_number的5、6位是出版社号，所有书几乎一样，就改成10、11位，增加随机性
-                Book book = new Book(book_name, book_author, "category", "A-" + isbn_number.substring(10, 12),
+                Book book = new Book(book_name, book_author, category, location + isbn_number.substring(10, 12),
                         isbn_code, isbn_number, true, reserve_time, "13300000001", false, "reason");
 
                 bookDao.addBook(book);
@@ -57,7 +59,7 @@ public class BookController {
             }
             List<BookInfo> bookMetas = bookMetaDao.queryBookMetaByISBNCode(isbn_code);
             if (bookMetas.size() == 0){
-                BookMeta bookMeta = new BookMeta(isbn_code, book_name, book_author, "null", "A-" + isbn_number.substring(10, 12), isbn_number, 0);
+                BookMeta bookMeta = new BookMeta(isbn_code, book_name, book_author, category, location, isbn_number, 0);
                 bookMetaDao.insertBookMeta(bookMeta);
             }
             bookMetaDao.updateBookMeta(isbn_code, num);

@@ -85,8 +85,8 @@
     </update>
 
     <insert id="addBook" useGeneratedKeys="true" keyProperty="bookID">
-        insert into book(book_name,book_author,location,isbn_code,isbn_number,available,reserve_time,reserve_user)
-        values (#{bookName}, #{bookAuthor}, #{location}, #{isbnCode}, #{isbnNumber}, #{available}, #{reserveTime}, #{reserveUser})
+        insert into book(book_name,book_author,location,isbn_code,isbn_number,available,reserve_time,reserve_user,reason,abandoned,category)
+        values (#{bookName}, #{bookAuthor}, #{location}, #{isbnCode}, #{isbnNumber}, #{available}, #{reserveTime}, #{reserveUser}, #{reason}, #{abandoned}, #{category})
     </insert>
 
     <delete id="deleteBook">

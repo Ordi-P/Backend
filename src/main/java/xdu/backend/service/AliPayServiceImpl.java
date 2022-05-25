@@ -42,7 +42,9 @@ public class AliPayServiceImpl implements AliPayService {
         AlipayTradePagePayRequest alipayTradePagePayRequest = new AlipayTradePagePayRequest();
         //alipayTradePagePayRequest.setNotifyUrl(AlipayConfig.notify_url + bookId);
         alipayTradePagePayRequest.setReturnUrl(AlipayConfig.return_url + bookId + "&userId=" + userId);
-        long startTime = borrowDao.getNoReturnDateByUserIdAndBookId(userId,Long.parseLong(bookId)).getTime();
+        Date endDate = borrowDao.getNoReturnDateByUserIdAndBookId(userId, Long.parseLong(bookId));
+        if(endDate == null) return;
+        long startTime = endDate.getTime();
         long endTime = new java.util.Date().getTime();
         String money = ((Long) ((endTime - startTime)/24/60/60/1000)).toString();
         String subject = "Penalty amount";
@@ -97,6 +99,7 @@ public class AliPayServiceImpl implements AliPayService {
     public boolean returnBook(String bookId, String userId, HttpServletResponse response) {
         Long no = Long.parseLong(bookId);
         Date date = borrowDao.getNoReturnDateByUserIdAndBookId(userId,no);
+        if(date == null) return false;
         java.util.Date tempDate = new java.util.Date();
         if(tempDate.getTime() - date.getTime() > 0){
             return false;
@@ -123,7 +126,10 @@ public class AliPayServiceImpl implements AliPayService {
     @Override
     public void updateReturnDate(String bookId, String userId) {
         long bId = Long.parseLong(bookId);
+        Date recordDate = borrowDao.getNoReturnDateByUserIdAndBookId(userId, bId);
+        if(recordDate == null) return;
         java.util.Date date1 = new java.util.Date();
+        if(recordDate.getTime() < date1.getTime()) return;
         long newDate = date1.getTime() + 10*24*60*60*1000;
         Date date2 = new Date(newDate);
         borrowDao.updateReturnDateByBookIdAndUserId(userId,bId,date2);
@@ -132,7 +138,9 @@ public class AliPayServiceImpl implements AliPayService {
         while(iterator.hasNext()){
             UserBorrowInfo borrowInfo = iterator.next();
             Date borrowDate = borrowInfo.getBorrowDate();
-            long endTime = borrowDao.getNoReturnDateByUserIdAndBookId(userId,bId).getTime();
+            Date endDate = borrowDao.getNoReturnDateByUserIdAndBookId(userId, bId);
+            if(endDate == null) return;
+            long endTime = endDate.getTime();
             long nowTime = new java.util.Date().getTime();
             long bias = nowTime - endTime;
             if(bias > 0 && !borrowInfo.getReturned()){
@@ -155,7 +163,9 @@ public class AliPayServiceImpl implements AliPayService {
         while(iterator.hasNext()){
             UserBorrowInfo borrowInfo = iterator.next();
             Date borrowDate = borrowInfo.getBorrowDate();
-            long endTime = borrowDao.getNoReturnDateByUserIdAndBookId(userId,borrowInfo.getBookID()).getTime();
+            Date endDate = borrowDao.getNoReturnDateByUserIdAndBookId(userId, borrowInfo.getBookID());
+            if(endDate == null) return;
+            long endTime = endDate.getTime();
             long nowTime = new java.util.Date().getTime();
             long bias = nowTime - endTime;
             if(bias > 0){
@@ -198,7 +208,9 @@ public class AliPayServiceImpl implements AliPayService {
         while(iterator.hasNext()){
             UserBorrowInfo borrowInfo = iterator.next();
             java.util.Date newBorrowDate = new java.util.Date();
-            long shouldReturnTime =  borrowDao.getNoReturnDateByUserIdAndBookId(userId,borrowInfo.getBookID()).getTime();
+            Date endDate = borrowDao.getNoReturnDateByUserIdAndBookId(userId, borrowInfo.getBookID());
+            if(endDate == null) return;
+            long shouldReturnTime =  endDate.getTime();
             long bias = newBorrowDate.getTime() - shouldReturnTime;
             if(bias > 0){
                 borrowDao.updateReturnDateByBookIdAndUserId(userId,borrowInfo.getBookID(),new Date(new java.util.Date().getTime() + 10*24*60*60*1000));

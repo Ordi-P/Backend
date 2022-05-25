@@ -50,3 +50,7 @@ mybatis:
 # spring boot端口
 server:
   port: 8080
+
+logging:
+  level:
+    xdu.backend.Dao : debug

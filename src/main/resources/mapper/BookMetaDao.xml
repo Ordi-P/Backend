@@ -75,7 +75,7 @@
 
     <insert id="insertBookMeta">
         insert into book_meta
-        values (#{isbnCode}, #{isbnNumber}, #{bookName}, #{bookAuthor}, #{location}, #{amount})
+        values (#{isbnCode}, #{isbnNumber}, #{bookName}, #{bookAuthor}, #{category}, #{location}, #{amount})
     </insert>
 
     <delete id="deleteBookMeta">

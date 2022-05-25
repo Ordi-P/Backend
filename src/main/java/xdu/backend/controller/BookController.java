@@ -49,14 +49,14 @@ public class BookController {
                 Timestamp reserve_time = new Timestamp(date.getTime());
 
                 // 因为isbn_number的5、6位是出版社号，所有书几乎一样，就改成10、11位，增加随机性
-                Book book = new Book(book_name, book_author, "A-" + isbn_number.substring(10, 12), isbn_code, isbn_number, true, reserve_time, "13300000001");
+                Book book = new Book(book_name, book_author, "category", "A-" + isbn_number.substring(10, 12),
+                        isbn_code, isbn_number, true, reserve_time, "13300000001", false, "reason");
 
-                bookDao.addBook(book);
                 bookDao.addBook(book);
                 book_id_list.add(book.getBookID());
             }
-            List<BookInfo> bookInfos = bookMetaDao.queryBookMetaByISBNCode(isbn_code);
-            if (bookInfos.size() == 0){
+            List<BookInfo> bookMetas = bookMetaDao.queryBookMetaByISBNCode(isbn_code);
+            if (bookMetas.size() == 0){
                 BookMeta bookMeta = new BookMeta(isbn_code, book_name, book_author, "null", "A-" + isbn_number.substring(10, 12), isbn_number, 0);
                 bookMetaDao.insertBookMeta(bookMeta);
             }
@@ -74,7 +74,9 @@ public class BookController {
     }
 
     @GetMapping(value = "/deletebook")
-    public JSONObject deleteBook(@RequestParam(value = "book_id", required = true) Long book_id){
+    public JSONObject deleteBook(@RequestParam(value = "book_id", required = true) Long book_id,
+                                 @RequestParam(value = "reason", required = true) String reason
+    ){
         JSONObject json = new JSONObject();
 
         try{
@@ -85,18 +87,20 @@ public class BookController {
                 return json;
             }
 
-            if (bookDao.deleteBook(book_id) > 0) {
-                List<BookInfo> list = bookMetaDao.queryBookMetaByISBNCode(book.getIsbnCode());
-                if (list.size() != 0){
-                    if (list.get(0).getAmount() > 1) {
-                        bookMetaDao.updateBookMeta(book.getIsbnCode(), -1);
-                    } else {
-                        bookMetaDao.deleteBookMeta(book.getIsbnCode());
-                    }
-                    json.put("result", "success");
-                } else {
-                    json.put("result", "failed");
-                }
+            // 设置参数为删除状态，但是记录不删除
+            book.setAbandoned(false);
+            book.setReason(reason);
+
+            List<BookInfo> list = bookMetaDao.queryBookMetaByISBNCode(book.getIsbnCode());
+            if (list.size() != 0){
+                bookMetaDao.updateBookMeta(book.getIsbnCode(), -1);
+//                if (list.get(0).getAmount() > 1) {
+//                    bookMetaDao.updateBookMeta(book.getIsbnCode(), -1);
+//                } else {
+//                    // 剩余书籍只有1本
+//                    bookMetaDao.deleteBookMeta(book.getIsbnCode());
+//                }
+                json.put("result", "success");
             } else {
                 json.put("result", "failed");
             }
@@ -175,6 +179,43 @@ public class BookController {
         sb.append(ch[12]);
 
         return sb.toString();
+    }
+
+    /**
+     * 根据isbn来修改location和category
+     * @param isbn_Number isbn
+     * @param location 新的location
+     * @param category 新的category
+     * @return 是否正确执行
+     */
+    @GetMapping(value = "/changeLocationAndCategory")
+    public JSONObject changeLocationAndCategory(@RequestParam(value = "isbnNum", required = true) String isbn_Number,
+                                                @RequestParam(value = "location", required = true) String location,
+                                                @RequestParam(value = "category", required = true) String category
+    ){
+        JSONObject json = new JSONObject();
+
+        try{
+            List<Book> books = bookDao.queryBookByISBN(isbn_Number);
+            // 结果为空
+            if (books.isEmpty()) {
+                json.put("result", "failed");
+                return json;
+            }
+
+            for (Book book :
+                    books) {
+                book.setLocation(location).setCategory(category);
+            }
+
+            json.put("result", "success");
+        } catch (Exception e){
+            e.printStackTrace();
+            json.put("result", "failed");
+            return json;
+        }
+
+        return json;
     }
 
 }

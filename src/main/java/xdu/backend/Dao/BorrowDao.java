@@ -57,4 +57,6 @@ public interface BorrowDao {
     int getTotalUnpaidFines();
 
     int getTotalFines();
+
+    Integer getTotalRegistered();
 }

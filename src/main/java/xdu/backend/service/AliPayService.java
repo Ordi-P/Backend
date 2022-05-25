@@ -22,4 +22,6 @@ public interface AliPayService {
     int getTotalUnpaidFines();
 
     int getTotalFines();
+
+    Integer getTotalRegistered();
 }

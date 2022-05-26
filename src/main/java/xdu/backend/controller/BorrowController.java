@@ -26,8 +26,8 @@ public class BorrowController {
 
     @RequestMapping(value = "/searchbook", method = RequestMethod.GET)
     @ResponseBody
-    public List<BookInfo> searchBook(@RequestParam(value = "info", required = false) String bookInfo) {
-        return borrowService.searchBook(bookInfo);
+    public List<BookInfo> searchBook(@RequestParam(value = "info", required = false) String info) {
+        return borrowService.searchBook(info);
     }
 
 

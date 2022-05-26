@@ -61,4 +61,8 @@ public interface BookDao {
     List<AbandonedBook> queryLostBooks();
 
     List<AbandonedBook> queryDamagedBooks();
+
+    void updateBookAbandonedByID(@Param("bookID") Long bookID, @Param("reason") String reason);
+
+    void updateLocationAndCategoryByISBNNumber(@Param("location") String location, @Param("category") String category, @Param("isbnNumber") String isbnNumber);
 }

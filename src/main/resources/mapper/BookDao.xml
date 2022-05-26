@@ -149,7 +149,17 @@
         where abandoned = true and reason = 'damaged'
     </select>
 
+    <update id="updateBookAbandonedByID">
+        update book
+        set abandoned = true and reason = #{reason}
+        where book_id = #{bookID}
+    </update>
 
+    <update id="updateLocationAndCategoryByISBNNumber">
+        update book
+        set location = #{location}, category = #{category}
+        where isbn_number = #{isbnNumber}
+    </update>
 
 </mapper>
 

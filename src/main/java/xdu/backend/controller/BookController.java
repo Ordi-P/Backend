@@ -63,7 +63,7 @@ public class BookController {
                 BookMeta bookMeta = new BookMeta(isbn_code, book_name, book_author, category, location, isbn_number, 0);
                 bookMetaDao.insertBookMeta(bookMeta);
             }
-            bookMetaDao.updateBookMeta(isbn_code, num);
+            bookMetaDao.updateBookMeta(isbn_number, num);
         } catch (Exception e) {
             e.printStackTrace();
             json.put("result", "failed");
@@ -79,38 +79,32 @@ public class BookController {
 
     @GetMapping(value = "/deletebook")
     public JSONObject deleteBook(@RequestParam(value = "book_id", required = true) Long book_id,
-                                 @RequestParam(value = "reason", required = true) String reason
-    ){
+                                 @RequestParam(value = "reason", required = true) String reason) {
+
         JSONObject json = new JSONObject();
 
         try{
             Book book = bookDao.queryBookByID(book_id);
-            // author:xduTD，这本书目前不在图书馆中，不能删除书籍
-            if (DAMAGED_STATE.equals(reason) && !bookDao.queryBookAvailability(book_id)) {
+            // author: xduTD，这本书目前不在图书馆中，且删除原因不是丢失，不能删除书籍
+            if (!LOST_STATE.equals(reason) && !bookDao.queryBookAvailability(book_id)) {
                 json.put("result", "failed");
+                json.put("errorMsg", "Cannot delete this copy, the book is neither lost nor in the library");
                 return json;
             }
 
-            // 设置参数为删除状态，但是记录不删除
-            book.setAbandoned(false);
-            book.setReason(reason);
-
-            List<BookInfo> list = bookMetaDao.queryBookMetaByISBNCode(book.getIsbnCode());
-            if (list.size() != 0){
-                bookMetaDao.updateBookMeta(book.getIsbnCode(), -1);
-//                if (list.get(0).getAmount() > 1) {
-//                    bookMetaDao.updateBookMeta(book.getIsbnCode(), -1);
-//                } else {
-//                    // 剩余书籍只有1本
-//                    bookMetaDao.deleteBookMeta(book.getIsbnCode());
-//                }
+            List<BookMeta> bookMetaList = bookMetaDao.queryBookMetaByISBNNumber(book.getIsbnNumber());
+            if (bookMetaList.size() != 0) {
+                // 更改数据库中的记录
+                bookDao.updateBookAbandonedByID(book_id, reason);
+                bookMetaDao.updateBookMeta(book.getIsbnNumber(), -1);
                 json.put("result", "success");
             } else {
                 json.put("result", "failed");
+                json.put("errorMsg", "Database synchronizing failed, this book may have been deleted.");
             }
         } catch (Exception e){
-            e.printStackTrace();
             json.put("result", "failed");
+            json.put("errorMsg", e.getMessage());
             return json;
         }
 
@@ -187,35 +181,34 @@ public class BookController {
 
     /**
      * 根据isbn来修改location和category
-     * @param isbn_Number isbn
+     * @param isbnNumber isbn
      * @param location 新的location
      * @param category 新的category
      * @return 是否正确执行
      */
     @GetMapping(value = "/changeLocationAndCategory")
-    public JSONObject changeLocationAndCategory(@RequestParam(value = "isbnNum", required = true) String isbn_Number,
+    public JSONObject changeLocationAndCategory(@RequestParam(value = "isbnNum", required = true) String isbnNumber,
                                                 @RequestParam(value = "location", required = true) String location,
                                                 @RequestParam(value = "category", required = true) String category
-    ){
+    ) {
         JSONObject json = new JSONObject();
 
         try{
-            List<Book> books = bookDao.queryBookByISBN(isbn_Number);
+            List<Book> books = bookDao.queryBookByISBN(isbnNumber);
             // 结果为空
             if (books.isEmpty()) {
                 json.put("result", "failed");
+                json.put("errorMsg", "No book with ISBN number:" + isbnNumber);
                 return json;
             }
 
-            for (Book book :
-                    books) {
-                book.setLocation(location).setCategory(category);
-            }
+            bookDao.updateLocationAndCategoryByISBNNumber(location, category, isbnNumber);
+            bookMetaDao.updateLocationAndCategoryByISBNNumber(location, category, isbnNumber);
 
             json.put("result", "success");
         } catch (Exception e){
-            e.printStackTrace();
             json.put("result", "failed");
+            json.put("errorMsg", e.getMessage());
             return json;
         }
 

@@ -14,11 +14,15 @@
 
 
     <select id="queryBookInfoByISBN" parameterType="String" resultMap="BookInfoMap">
-        select bm.book_name, bm.book_author, bm.category, bm.location, bm.isbn_number, bm.amount, sum(b.available) as available_number
-        from book_meta bm
-            left join book b
-            on b.isbn_number = bm.isbn_number
-        where bm.isbn_number = #{isbnNumber}
+        select bookinfo.book_name, bookinfo.book_author, bookinfo.category, bookinfo.location, bookinfo.isbn_number, bookinfo.amount, sum(available) as available_number
+        from (
+                 select bm.book_name, bm.book_author, bm.category, bm.location, bm.isbn_number, bm.amount, b.available
+                 from book_meta bm
+                        left join book b
+                        on b.isbn_number = bm.isbn_number
+                 where bm.isbn_number = #{isbnNumber} and b.abandoned = false
+             ) as bookinfo
+        group by isbn_number;
     </select>
 
     <select id="queryBookMetaByISBNCode" parameterType="String" resultType="xdu.backend.pojo.BookMeta">
@@ -28,49 +32,69 @@
     </select>
 
     <select id="queryBookInfoByName" parameterType="String" resultMap="BookInfoMap">
-        select bm.book_name, bm.book_author, bm.category, bm.location, bm.isbn_number, bm.amount, sum(b.available) as available_number
-        from book_meta bm
-                 left join book b
-                           on b.isbn_number = bm.isbn_number
-        where bm.book_name like concat(concat('%', #{bookName}), '%')
+        select bookinfo.book_name, bookinfo.book_author, bookinfo.category, bookinfo.location, bookinfo.isbn_number, bookinfo.amount, sum(available) as available_number
+        from (
+                 select bm.book_name, bm.book_author, bm.category, bm.location, bm.isbn_number, bm.amount, b.available
+                 from book_meta bm
+                        left join book b
+                        on b.isbn_number = bm.isbn_number
+                 where bm.book_name like concat(concat('%', #{bookName}), '%') and b.abandoned = false
+             ) as bookinfo
+        group by isbn_number;
     </select>
 
     <select id="queryBookInfoByAuthor" parameterType="String" resultMap="BookInfoMap">
-        select bm.book_name, bm.book_author, bm.category, bm.location, bm.isbn_number, bm.amount, sum(b.available) as available_number
-        from book_meta bm
-                 left join book b
-                           on b.isbn_number = bm.isbn_number
-        where bm.book_author like concat(concat('%', #{author}), '%')
+        select bookinfo.book_name, bookinfo.book_author, bookinfo.category, bookinfo.location, bookinfo.isbn_number, bookinfo.amount, sum(available) as available_number
+        from (
+                 select bm.book_name, bm.book_author, bm.category, bm.location, bm.isbn_number, bm.amount, b.available
+                 from book_meta bm
+                        left join book b
+                        on b.isbn_number = bm.isbn_number
+                 where bm.book_author like concat(concat('%', #{author}), '%') and b.abandoned = false
+             ) as bookinfo
+        group by isbn_number;
     </select>
 
     <select id="queryBookInfoByCategory" parameterType="String" resultMap="BookInfoMap">
-        select bm.book_name, bm.book_author, bm.category, bm.location, bm.isbn_number, bm.amount, sum(b.available) as available_number
-        from book_meta bm
-                 left join book b
-                           on b.isbn_number = bm.isbn_number
-        where bm.category like concat(concat('%', #{category}), '%')
+        select bookinfo.book_name, bookinfo.book_author, bookinfo.category, bookinfo.location, bookinfo.isbn_number, bookinfo.amount, sum(available) as available_number
+        from (
+                 select bm.book_name, bm.book_author, bm.category, bm.location, bm.isbn_number, bm.amount, b.available
+                 from book_meta bm
+                        left join book b
+                        on b.isbn_number = bm.isbn_number
+                 where bm.category like concat(concat('%', #{category}), '%') and b.abandoned = false
+             ) as bookinfo
+        group by isbn_number;
     </select>
 
     <select id="queryBookInfoByISBNNumber" parameterType="String" resultMap="BookInfoMap">
-        select bm.book_name, bm.book_author, bm.category, bm.location, bm.isbn_number, bm.amount, sum(b.available) as available_number
-        from book_meta bm
-                 left join book b
-                           on b.isbn_number = bm.isbn_number
-        where bm.isbn_number like concat(concat('%', #{isbnNumber}), '%')
+        select bookinfo.book_name, bookinfo.book_author, bookinfo.category, bookinfo.location, bookinfo.isbn_number, bookinfo.amount, sum(available) as available_number
+        from (
+                 select bm.book_name, bm.book_author, bm.category, bm.location, bm.isbn_number, bm.amount, b.available
+                 from book_meta bm
+                        left join book b
+                        on b.isbn_number = bm.isbn_number
+                 where bm.isbn_number like concat(concat('%', #{isbnNumber}), '%') and b.abandoned = false
+             ) as bookinfo
+        group by isbn_number;
     </select>
 
     <select id="getAllBookInfos" resultMap="BookInfoMap">
-        select bm.book_name, bm.book_author, bm.category, bm.location, bm.isbn_number, bm.amount, sum(b.available) as available_number
-        from book_meta bm
-                 left join book b
-                           on b.isbn_number = bm.isbn_number
-        limit 50
+        select bookinfo.book_name, bookinfo.book_author, bookinfo.category, bookinfo.location, bookinfo.isbn_number, bookinfo.amount, sum(available) as available_number
+        from (
+                 select bm.book_name, bm.book_author, bm.category, bm.location, bm.isbn_number, bm.amount, b.available
+                 from book_meta bm
+                        left join book b
+                        on b.isbn_number = bm.isbn_number
+                 where b.abandoned = false
+             ) as bookinfo
+        group by isbn_number;
     </select>
 
     <update id="updateBookMeta">
         update book_meta
         set amount = amount + #{deltaNum}
-        where isbn_code = #{isbn_code}
+        where isbn_number = #{isbnNumber}
     </update>
 
     <insert id="insertBookMeta">
@@ -88,4 +112,11 @@
         from book_meta
         where amount > 0
     </select>
+
+    <update id="updateLocationAndCategoryByISBNNumber">
+        update book_meta
+        set location = #{location} and category = #{category}
+        where isbn_number = #{isbnNumber}
+    </update>
+
 </mapper>

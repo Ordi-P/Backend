@@ -230,9 +230,10 @@ public class BorrowController {
 
         // 状态与字段映射起来
         json.put("collectionNumber", states[0]);
-        json.put("lentoutNumber", states[1]);
-        json.put("damagedNumber", states[2]);
-        json.put("lostNumber", states[3]);
+        json.put("bookMetaNumber", states[1]);
+        json.put("lentoutNumber", states[2]);
+        json.put("damagedNumber", states[3]);
+        json.put("lostNumber", states[4]);
 
         return json;
     }

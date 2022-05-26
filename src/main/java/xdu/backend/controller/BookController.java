@@ -18,6 +18,8 @@ import java.util.List;
 @RestController
 @CrossOrigin
 public class BookController {
+    private static final String DAMAGED_STATE = "damaged";
+    private static final String LOST_STATE = "lost";
 
     @Autowired
     BookDao bookDao;
@@ -74,6 +76,7 @@ public class BookController {
         return json;
     }
 
+
     @GetMapping(value = "/deletebook")
     public JSONObject deleteBook(@RequestParam(value = "book_id", required = true) Long book_id,
                                  @RequestParam(value = "reason", required = true) String reason
@@ -83,7 +86,7 @@ public class BookController {
         try{
             Book book = bookDao.queryBookByID(book_id);
             // author:xduTD，这本书目前不在图书馆中，不能删除书籍
-            if (!bookDao.queryBookAvailability(book_id)) {
+            if (DAMAGED_STATE.equals(reason) && !bookDao.queryBookAvailability(book_id)) {
                 json.put("result", "failed");
                 return json;
             }

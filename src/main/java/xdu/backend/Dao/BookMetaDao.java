@@ -32,4 +32,5 @@ public interface BookMetaDao {
 
     List<BookInfo> getAllBookInfos();
 
+    Integer queryBookMetaNumber();
 }

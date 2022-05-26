@@ -269,6 +269,8 @@ public class BorrowServiceImpl implements BorrowService {
     public int[] queryBookStates() {
         // 馆藏书籍数量
         int collectionNumber = bookDao.queryCollectionNumber();
+        // 馆藏所有不同的书籍数量
+        int bookMetaNumber = bookMetaDao.queryBookMetaNumber();
         // 借出的书籍数量
         int lentoutNumber = bookDao.queryLentOutNumber();
         // 损坏的书籍数量
@@ -276,7 +278,7 @@ public class BorrowServiceImpl implements BorrowService {
         // 丢失的书籍数量
         int lostNumber = bookDao.queryLostNumber();
 
-        return new int[]{collectionNumber, lentoutNumber, damagedNumber, lostNumber};
+        return new int[]{collectionNumber, bookMetaNumber, lentoutNumber, damagedNumber, lostNumber};
     }
 
     @Override

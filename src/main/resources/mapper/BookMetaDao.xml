@@ -82,4 +82,10 @@
         delete from book_meta
         where isbn_code = #{isbn_code}
     </delete>
+
+    <select id="queryBookMetaNumber" resultType="java.lang.Integer">
+        select count(*)
+        from book_meta
+        where amount > 0
+    </select>
 </mapper>

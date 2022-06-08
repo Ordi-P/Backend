@@ -121,13 +121,13 @@
     <select id="queryDamagedNumber" resultType="java.lang.Integer">
         select count(*)
         from book
-        where abandoned = true and reason = 'lost'
+        where abandoned = true and reason = 'damaged'
     </select>
 
     <select id="queryLostNumber" resultType="java.lang.Integer">
         select count(*)
         from book
-        where abandoned = true and reason = 'damaged'
+        where abandoned = true and reason = 'lost'
     </select>
 
     <resultMap id="AbandonedBookMap" type="xdu.backend.vo.AbandonedBook">

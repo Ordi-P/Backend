@@ -261,7 +261,7 @@ public class BorrowServiceImpl implements BorrowService {
             throw new BorrowTimeExpireException(bookDao.queryBookNameByID(bookID));
         } else {
             // 书未逾期，将还书时间延后10天，达到续借的目的
-            borrowDao.updateReturnDateByTransactionTD(transactionID, new Date(returnDate.getTime() + RENEW_TIME));
+            borrowDao.updateReturnDateByTransactionID(transactionID, new Date(returnDate.getTime() + RENEW_TIME));
         }
     }
 

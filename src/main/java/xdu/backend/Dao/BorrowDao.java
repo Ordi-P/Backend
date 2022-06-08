@@ -42,7 +42,7 @@ public interface BorrowDao {
 
     Date queryReturnDateByTransactionID(Long transactionID);
 
-    void updateReturnDateByTransactionTD(@Param("transactionID") Long transactionID, @Param("date") Date date);
+    void updateReturnDateByTransactionID(@Param("transactionID") Long transactionID, @Param("returnDate") Date date);
 
     String queryBorrowerByTransactionID(Long transactionID);
 

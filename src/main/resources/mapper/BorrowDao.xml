@@ -91,7 +91,7 @@
 
     <select id="queryReturnDateByTransactionID" parameterType="Long" resultType="java.sql.Date">
         select return_date
-        from borrow_date
+        from borrow_record
         where borrow_tx_id = #{transactionID}
     </select>
 

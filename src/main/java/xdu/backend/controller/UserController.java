@@ -74,7 +74,7 @@ public class UserController {
         Cookie[] cookies = request.getCookies();
         Cookie cookie = null;
         for(Cookie item : cookies){
-            if(item.getName().equals("cookieUserName")){
+            if("cookieUserName".equals(item.getName())){
                 cookie = item;
                 break;
             }
@@ -99,13 +99,14 @@ public class UserController {
     @RequestMapping("/admin/logout")
     String adminLogout(HttpServletRequest request, HttpServletResponse response,HttpSession session){
         Cookie[] cookies = request.getCookies();
-        for (Cookie cookie:cookies) {
-            if (cookie.getName().equals("adminCookie")){
-                session.removeAttribute(cookie.getValue());
-                return "success";
-            }
-        }
-        return "fail";
+//        for (Cookie cookie:cookies) {
+//            if (cookie.getName().equals("adminCookie")){
+//                session.removeAttribute(cookie.getValue());
+//                return "success";
+//            }
+//        }
+        return "sueeess";
+//        return "fail";
     }
 
     @RequestMapping("/updatePassword")

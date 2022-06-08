@@ -151,7 +151,7 @@
 
     <update id="updateBookAbandonedByID">
         update book
-        set abandoned = true and reason = #{reason}
+        set abandoned = 1 and reason = #{reason}
         where book_id = #{bookID}
     </update>
 

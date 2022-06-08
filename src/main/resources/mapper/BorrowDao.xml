@@ -89,7 +89,7 @@
                           where borrow_tx_id = #{transacionID})
     </select>
 
-    <select id="queryReturnDateByTransactionID" parameterType="String" resultType="java.sql.Date">
+    <select id="queryReturnDateByTransactionID" parameterType="Long" resultType="java.sql.Date">
         select return_date
         from borrow_date
         where borrow_tx_id = #{transactionID}
@@ -129,7 +129,7 @@
         FROM
             borrow_record
         WHERE
-            returned = 0
+            returned = false
     </select>
 
     <select id="getTotalFines" resultType="int">
@@ -138,7 +138,7 @@
         FROM
             borrow_record
         WHERE
-            returned = 1
+            returned = true
     </select>
 
     <select id="getTotalRegistered" resultType="java.lang.Integer">
